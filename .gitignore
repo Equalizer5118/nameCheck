@@ -1,3 +1,4 @@
 log.txt
 *.xlsx
 build/*
+config.ini

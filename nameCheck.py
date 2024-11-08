@@ -2,17 +2,24 @@ import pandas as pd
 #from readchar import readchar
 from pathlib import Path as path
 from datetime import datetime as dt
+from math import isnan
 import configparser
+
+# COMMAND TEST
+#print(float('nan'))
+#print(float('nan') == float('none'))
+#quit()
+# ======
 
 #config stuffs
 config = configparser.ConfigParser()
 def create_config():
     config['PATHS'] = {'pg_class_roster': 'path_to_PGlist_here', 'yba_class_covrep': 'path_to_yba_class_covrep'}
     config['SHEETNAMES'] = {'roster_sheet_name': '0', 'covrep_sheet_name': '0'}
-    print('No config file found, created empty template. Please add paths to the spreadsheets in "config.ini" before proceeding!')
-    k = input("Test")
     with open('config.ini', 'w') as configfile:
         config.write(configfile)
+    print('No config file found, created empty template. Please add paths to the spreadsheets in "config.ini" before proceeding!')
+    k = input("")
     quit()
 # Create config.ini if missing
 if not path.exists(path('config.ini')): 
@@ -28,14 +35,16 @@ ybas = []
 dat = dt.now()
 logfile = path('log.txt')
 try:
-    pglist = pd.read_excel(config['PATHS']['pg_class_roster'])
-except OSError:
+    pglist = pd.read_excel(config['PATHS']['pg_class_roster'], sheet_name=config['SHEETNAMES']['roster_sheet_name'])
+except:
     print('!!!!Path to/sheet name for pg roster invalid or missing in config file!')
+    input("Press enter to exit the program...")
     exit()
 try:
     ybalist = pd.read_excel(config['PATHS']['yba_class_covrep'], sheet_name=config['SHEETNAMES']['covrep_sheet_name'])
-except OSError:
+except:
     print('!!!!Path to/sheet name for YBA coverage report invalid or missing in config file!')
+    input("Press enter to exit the program")
     exit()
 pgi = pglist.index
 ybai = ybalist.index
@@ -51,8 +60,18 @@ for i in ybai:
     if ybas[i] in pgs:
         verified.append(ybas[i])
         print(ybalist.loc[i, 'Used on Page(s)'])
-        if ybalist.loc[i, 'Used on Page(s)'] == 'nan':
-            noimg.append(ybas[i])
+        try:
+            int(ybalist.loc[i, 'Used on Page(s)'])
+        except:
+            print("ruh roh")
+            try:
+                isnan(ybalist.loc[i, 'Used on Page(s)'])
+                noimg.append(ybas[i])
+            except:
+                print("no ruh roh")
+ #       if isnan(ybalist.loc[i, 'Used on Page(s)']) and ',' not in ybalist.loc[i, 'Used on Page(s)']:
+ #           print('not a number, womp womp')
+ #           noimg.append(ybas[i])
         pgs.remove(ybas[i])
     else:
         unac.append(f'{i}, {ybas[i]}')
