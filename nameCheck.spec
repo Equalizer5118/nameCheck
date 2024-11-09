@@ -1,11 +1,12 @@
 # -*- mode: python ; coding: utf-8 -*-
-
+from shutil import copy
+from pathlib import Path
 
 a = Analysis(
     ['nameCheck.py'],
     pathex=[],
     binaries=[],
-    datas=[ ('README.md', '.'), ('VERSION.md', '.') ],
+    datas=[('assets\\icon.ico', 'assets')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
@@ -43,3 +44,7 @@ coll = COLLECT(
     upx_exclude=[],
     name='nameCheck',
 )
+
+Path.unlink('dist\\nameCheck.zip')
+copy('README.md', 'dist\\nameCheck\\README.md')
+copy('VERSION.md', 'dist\\nameCheck\\VERSION.md')
