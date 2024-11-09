@@ -3,3 +3,4 @@ log.txt
 dist/*
 build/*
 config.ini
+*/__pycache__/*
