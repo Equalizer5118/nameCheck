@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="159.57886mm"
+   height="48.153103mm"
+   viewBox="0 0 159.57886 48.153103"
+   version="1.1"
+   id="svg1"
+   xml:space="preserve"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   sodipodi:docname="nameCheck_temp.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"><sodipodi:namedview
+     id="namedview1"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#505050"
+     inkscape:document-units="mm"
+     inkscape:zoom="1.0847363"
+     inkscape:cx="399.17535"
+     inkscape:cy="516.71543"
+     inkscape:window-width="1920"
+     inkscape:window-height="1057"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" /><defs
+     id="defs1" /><g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-34.599603,-94.744344)"><text
+       xml:space="preserve"
+       style="font-weight:bold;font-size:22.5778px;line-height:0;font-family:Corbel;-inkscape-font-specification:'Corbel Bold';letter-spacing:0.941917px;fill:#ffffff;stroke-width:0.865;stroke-dasharray:none"
+       x="72.783974"
+       y="138.32404"
+       id="text1"><tspan
+         sodipodi:role="line"
+         id="tspan1"
+         style="font-size:22.5778px;line-height:0.1;letter-spacing:0.941917px;stroke-width:0.865;stroke-dasharray:none"
+         x="72.783974"
+         y="138.32404"><tspan
+           style="fill:none;stroke:#55ff84;stroke-width:0.865;stroke-dasharray:none;stroke-opacity:1"
+           id="tspan3">name</tspan><tspan
+           style="line-height:0.1;fill:#55ff84;fill-opacity:1;stroke-width:0.865;stroke-dasharray:none"
+           id="tspan2">Check</tspan></tspan></text><g
+       id="g3"
+       transform="matrix(0.26458333,0,0,0.26458333,6.465666,57.172982)"
+       style="fill:#55ff84;fill-opacity:1;stroke:none;stroke-width:1.00157;stroke-dasharray:none"><g
+         id="OBJECTS"
+         style="fill:#55ff84;fill-opacity:1;stroke:none;stroke-width:1.00157;stroke-dasharray:none">
+	<g
+   id="g2"
+   style="fill:#55ff84;fill-opacity:1;stroke:none;stroke-width:1.00157;stroke-dasharray:none">
+		<polygon
+   style="fill:#55ff84;fill-opacity:1;stroke:none;stroke-width:1.00157;stroke-dasharray:none"
+   points="125.169,234.258 175.074,284.162 289.301,142.002 310.066,158.681 177.234,323.998 106.333,253.094 "
+   id="polygon1"
+   inkscape:highlight-color="#55ff84" />
+		
+	</g>
+	
+		<radialGradient
+   id="SVGID_1_"
+   cx="496.6647"
+   cy="738.52502"
+   r="37.228298"
+   gradientTransform="matrix(-3.2074,0,0,-0.129,1837.0024,495.0587)"
+   gradientUnits="userSpaceOnUse">
+		<stop
+   offset="0.1429"
+   style="stop-color:#000000"
+   id="stop2" />
+		<stop
+   offset="1"
+   style="stop-color:#DAE5DF;stop-opacity:0"
+   id="stop3" />
+	</radialGradient>
+	
+</g></g></g></svg>
