@@ -13,7 +13,6 @@
     * Added Powershell command to automatically compress files to a zip
     * Now points to .spec file, so README and VERSION files get put inside `dist` automatically
 * New `version.md` file to show changelogs of current and previous versions
-*
 
 # v0.1.0
 
