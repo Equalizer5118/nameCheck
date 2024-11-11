@@ -3,3 +3,8 @@ log.txt
 dist/*
 build/*
 config.ini
+*/__pycache__/*
+src/qt_test*.py
+src/Main/*
+src/main.py
+src/qt_mainwindow.py
