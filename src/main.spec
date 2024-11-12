@@ -3,10 +3,10 @@ from shutil import copy
 from pathlib import Path
 
 a = Analysis(
-    ['nameCheck.py'],
+    ['main.py'],
     pathex=[],
     binaries=[],
-    datas=[('assets\\icon.ico', 'assets')],
+    datas=[('..\\assets\\icon.ico', 'assets')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
@@ -28,7 +28,7 @@ exe = EXE(
     strip=False,
     upx=True,
     console=True,
-    icon='assets\\icon.ico',
+    icon='..\\assets\\icon.ico',
     disable_windowed_traceback=False,
     argv_emulation=False,
     target_arch=None,
@@ -42,7 +42,7 @@ coll = COLLECT(
     strip=False,
     upx=True,
     upx_exclude=[],
-    name='nameCheck',
+    name='main',
 )
 
 Path.unlink('dist\\nameCheck.zip')
