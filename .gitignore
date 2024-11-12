@@ -4,5 +4,3 @@ dist/*
 build/*
 config.ini
 */__pycache__/*
-src/qt_test*.py
-src/Main/*
