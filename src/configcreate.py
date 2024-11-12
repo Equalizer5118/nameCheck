@@ -2,6 +2,8 @@
 import configparser
 from pathlib import Path as path
 from debugprint import p
+def echo():
+    print('nameCheck present')
 config = configparser.ConfigParser()
 
 def init_config():

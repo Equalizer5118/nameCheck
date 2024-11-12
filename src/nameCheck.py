@@ -9,6 +9,9 @@ import spreadsheetms as si
 import writelog as wl
 from debugprint import p
 
+def echo():
+    print('nameCheck present')
+
 # COMMAND TEST
 #p(float('nan'))
 #p(float('nan') == float('none'))
@@ -64,16 +67,18 @@ def checkNames(pgclist, pgcsheet, ybaclist, ybacsheet, genlog):
             unac.append(f'{i}, {ybas[i]}')
 
     results = f'In total: {len(verified)}/{len(pgi)} students were verified leaving {len(unac)} unverified students in Yearbook Avenue, and {len(noimg)}/{len(verified)} verified students had untagged images.\n' \
-      'Additionally, {len(pgs)} students were either not in Yearbook Avenue or otherwise failed to verify, or could have multiple last names'
+      f'Additionally, {len(pgs)} students were either not in Yearbook Avenue or otherwise failed to verify, or could have multiple last names'
     # Initial Results
     p('')
     p(results)
     p('')
 
     # Write log
-    if genlog: wl.write_log(dat, verified, unac, pgs, noimg, pgi, logfile), log = 'Full list of students (un)verified/untagged/not-in-yba in log.txt file.'
+    if genlog: 
+        wl.write_log(dat, verified, unac, pgs, noimg, pgi, logfile)
+        log = 'Full list of students (un)verified/untagged/not-in-yba in log.txt file.'
 
-    p()
-    return results, log
+    p('nameCheck complete')
+    return f'{results}, \n {log}'
     #p('Press any key to exit...')
     #k = input()

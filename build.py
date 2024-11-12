@@ -16,7 +16,7 @@ def dir_scan(path):
             list.append(str(i.path))
         elif i.is_dir():
             dir_scan(i.path)
-dir_scan('dist\\nameCheck')
+dir_scan('dist\\main')
 
 with ZipFile('dist\\nameCheck.zip', 'w') as myzip:
     for i in list:

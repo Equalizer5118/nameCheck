@@ -6,6 +6,8 @@ from debugprint import p
 from qt_univerr import funcerror
 from sys import argv
 import traceback
+def echo():
+    print('nameCheck present')
 class DefWindow(QWidget):
     def __init__(self):
         super().__init__()

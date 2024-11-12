@@ -6,7 +6,8 @@ a = Analysis(
     ['main.py'],
     pathex=[],
     binaries=[],
-    datas=[('..\\assets\\icon.ico', 'assets')],
+    datas=[('..\\assets\\icon.ico', 'assets'), ('configcreate.py','.'), ('debugprint.py','.'), 
+           ('nameCheck.py','.'), ('qt_mainwindow.py','.'), ('qt_univerr.py','.'), ('spreadsheetms.py','.'), ('writelog.py','.')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
@@ -46,5 +47,5 @@ coll = COLLECT(
 )
 
 Path.unlink('dist\\nameCheck.zip')
-copy('README.md', 'dist\\nameCheck\\README.md')
-copy('VERSION.md', 'dist\\nameCheck\\VERSION.md')
+copy('README.md', 'dist\\main\\README.md')
+copy('VERSION.md', 'dist\\main\\VERSION.md')

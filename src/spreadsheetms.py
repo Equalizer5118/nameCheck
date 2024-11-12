@@ -1,5 +1,7 @@
 import pandas as pd
 from qt_univerr import funcerror
+def echo():
+    print('nameCheck present')
 def init_pg(pgclist, pgcsheet):
 # try:
    pglist = pd.read_excel(pgclist, pgcsheet)
