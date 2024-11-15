@@ -1,3 +1,9 @@
+## v0.2.1
+
+### Bugfixes
+
+* Attempted to fix random exception on program start. Works, but IDK how :/
+
 ## v0.2.0
 
 ### New Features/ changes
@@ -19,6 +25,7 @@
 * Added `requirements.txt`, which marks all the required python modules needed. Run `python -m pip install requirements.txt` to install.
 
 ### Known Bugs
+
 * (Technically not a but, just not implemented) No data saved in-between launches; Have to retype everything on relaunch
 * Putting anything, even invalid lists, in the textboxes will allow nameCheck to be ran. Causes exceptions due to invalid spreadsheets/sheetnames
 
