@@ -46,6 +46,9 @@ coll = COLLECT(
     name='main',
 )
 
-Path.unlink('dist\\nameCheck.zip')
+try:
+    Path.unlink('dist\\nameCheck.zip')
+except:
+    pass
 copy('README.md', 'dist\\main\\README.md')
 copy('VERSION.md', 'dist\\main\\VERSION.md')
