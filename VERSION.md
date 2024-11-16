@@ -1,3 +1,14 @@
+## v0.2.2
+### New Features/changes
+* Added advanced options for each path, so you can now specify custom First name and last name columns, as well as the ability to filter students by a specific column value.
+* Settings are now saved to a .json file (named `default.json`), which is saved when you exit the program. This is also loaded automatically, if it exists, on program load.
+* Better handling of exceptions on program load, so even school computers that won't let you use CMD can see the stupid mistakes I make!
+* Variables used by modules are stored in `qt_adv_vars.py`
+* Icon now shows on QT window!
+
+### Known bugs
+* Console reports that its unable to set directory to "." on first open of file dialog. Not really a bug,just annoying. Program works fine and doesn't break, properly set after closing file dialog again.
+
 ## v0.2.1
 
 ### Bugfixes
@@ -20,7 +31,7 @@
 ### Code improvements
 
 * Split all the large functions into modules, so the code looks much cleaner (aside from the large amount of comments. Placeholders for CLI implementation)
-* Replaced most of the `print()` commands are replaced by `debugprint.p`, so random debug print statements will not be spit out in the console.
+* Replaced most of the `print()` commands are replaced by `debugprint.p()`, so random debug print statements will not be spit out in the console.
 * build.bat has been replaced with build.py, so different platforms can now run the same command (not just windows)
 * Added `requirements.txt`, which marks all the required python modules needed. Run `python -m pip install requirements.txt` to install.
 

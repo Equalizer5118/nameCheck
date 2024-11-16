@@ -18,7 +18,7 @@ def dir_scan(path):
             dir_scan(i.path)
 dir_scan('dist\\main')
 
-with ZipFile('dist\\nameCheck.zip', 'w') as myzip:
+with ZipFile('dist\\nameCheck-v0.2.2.zip', 'w') as myzip:
     for i in list:
         myzip.write(i)
 

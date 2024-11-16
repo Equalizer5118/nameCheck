@@ -1,6 +1,7 @@
 from PySide6.QtWidgets import (QMessageBox, QLineEdit, QLabel, QGroupBox, 
                                QFileDialog, QWidget, QPushButton, QHBoxLayout, 
                                QVBoxLayout, QCheckBox)
+from PySide6.QtGui import QIcon
 from PySide6.QtCore import Qt
 from nameCheck import checkNames
 from debugprint import p
@@ -16,6 +17,7 @@ class DefWindow(QWidget):
         super().__init__()
 
         self.setWindowTitle("nameCheck")
+        self.setWindowIcon(QIcon('_internal\\assets\\icon.ico')) # This won't work for testing, but it does in build
 
         
         groupbox = QGroupBox('nameCheck')
@@ -191,7 +193,7 @@ class DefWindow(QWidget):
             except Exception as e:
                 traceback.print_tb(e.__traceback__)
                 print(f'Exception: {e}')
-                
+
                 funcerror(f'An error occured! Error: \n {e}')
                 ''' again, we are accepting every exception. why????
                     Well here, its a bit different. If there is an exception, I want the function to stop
