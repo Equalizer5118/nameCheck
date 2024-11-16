@@ -3,6 +3,7 @@ import pandas as pd
 from pathlib import Path as path
 from datetime import datetime as dt
 from math import isnan
+from qt_univerr import funcerror
 import configcreate as cc
 import configparser
 import spreadsheetms as si
@@ -46,8 +47,22 @@ def checkNames():
     if logfile.exists() == False: logfile.open("x")
 
     # Add student names to lists
-    for i in pgi: pgs.append(f'{pglist.loc[i, a.pg_lastcol]}, {pglist.loc[i, a.pg_firstcol]}')
-    for i in ybai: ybas.append(f'{ybalist.loc[i, a.yba_lastcol]}, {ybalist.loc[i, a.yba_firstcol]}')
+    for i in pgi: 
+        if a.pg_gradecos == 'Column' and int(pglist.loc[i, a.pg_gradesep]) != int(a.pg_gradesepv):
+            p(f'Name doesnt fir criteria, tossing. checked {a.pg_gradesep} and got {int(pglist.loc[i, a.pg_gradesep])}, should have gotten {int(a.pg_gradesepv)}.')
+        else: 
+            pgs.append(f'{pglist.loc[i, a.pg_lastcol]}, {pglist.loc[i, a.pg_firstcol]}')
+    for i in ybai: 
+        if a.yba_gradecos == 'Column' and int(ybalist.loc[i, a.yba_gradesep]) != int(a.yba_gradesepv):
+            p(f'Name doesnt fir criteria, tossing. checked {a.yba_gradesep} and got {int(ybalist.loc[i, a.yba_gradesep])}, should have gotten {int(a.yba_gradesepv)}.')
+        else: 
+            ybas.append(f'{ybalist.loc[i, a.yba_lastcol]}, {ybalist.loc[i, a.yba_firstcol]}')
+
+    # Last check to see if this is boken
+    if len(pgs) == 0:
+        raise ValueError('Length of pgs == 0. Check your Column var in Advanced options!')
+    elif len(ybas) == 0:
+        raise ValueError('Length of ybas == 0. Check your Column var in Advanced options!')
 
     # Name check
     for i in ybai:

@@ -189,7 +189,13 @@ class DefWindow(QWidget):
                 msgbox.setWindowTitle('Information')
                 msgbox.exec()  
             except Exception as e:
-                if '--debug' in argv or '-d' in argv: 
-                    traceback.print_tb(e.__traceback__)
-                    print(f'Exception: {e}')
+                traceback.print_tb(e.__traceback__)
+                print(f'Exception: {e}')
+                
                 funcerror(f'An error occured! Error: \n {e}')
+                ''' again, we are accepting every exception. why????
+                    Well here, its a bit different. If there is an exception, I want the function to stop
+                    however, I also want to report the exception to the user for debugging purposes
+                    thats why I except every error then put it in a qt popup, so its easier to digest for the user
+                    the full trace still gets put in console, but the user can understand what the error was.
+                '''

@@ -3,5 +3,6 @@ log.txt
 dist/*
 build/*
 config.ini
+0randomscripttest.py
 */__pycache__/*
 *.json

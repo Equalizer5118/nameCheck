@@ -40,10 +40,15 @@ class advwindow(QDialog):
         self.divider_var.setFixedWidth(65)
         self.divider_var.textChanged.connect(self.var_changed)
         self.divider_var.setPlaceholderText('Column')
+        self.divider_var_check = QLineEdit()
+        self.divider_var_check.setFixedWidth(45)
+        self.divider_var_check.textChanged.connect(self.var_check_changed)
+        self.divider_var_check.setPlaceholderText('Val')
 
         div_sublayout = QHBoxLayout()
         div_sublayout.addWidget(self.divider_type)
         div_sublayout.addWidget(self.divider_var)
+        div_sublayout.addWidget(self.divider_var_check)
 
         div_layout = QVBoxLayout()
         div_layout.addWidget(divider_label)
@@ -58,9 +63,11 @@ class advwindow(QDialog):
             if a.pg_gradecos == 'Sheet':
                 self.divider_type.setCurrentIndex(0)
                 self.divider_var.hide()
+                self.divider_var_check.hide()
             elif a.pg_gradecos == 'Column':
                 self.divider_type.setCurrentIndex(1)
             self.divider_var.setText(a.pg_gradesep)
+            self.divider_var_check.setText(a.pg_gradesepv)
             
         elif a.pg_or_yba == 'yba':
             groupbox = QGroupBox('Covrep Advanced Window')
@@ -70,9 +77,11 @@ class advwindow(QDialog):
             if a.yba_gradecos == 'Sheet':
                 self.divider_type.setCurrentIndex(0)
                 self.divider_var.hide()
+                self.divider_var_check.hide()
             elif a.yba_gradecos == 'Column':
                 self.divider_type.setCurrentIndex(1)
             self.divider_var.setText(a.yba_gradesep)
+            self.divider_var_check.setText(a.yba_gradesepv)
 
 
         else:
@@ -109,8 +118,10 @@ class advwindow(QDialog):
             a.yba_gradecos = self.divider_type.currentText()
         if data == 0: 
             self.divider_var.hide()
+            self.divider_var_check.hide()
         else:
             self.divider_var.show()
+            self.divider_var_check.show()
 
     def var_changed(self, data):
         p(f'Var changed, {data}')
@@ -118,4 +129,11 @@ class advwindow(QDialog):
             a.pg_gradesep = data
         elif a.pg_or_yba == 'yba':
             a.yba_gradesep = data
+
+    def var_check_changed(self, data):
+        p(f'Var_check changed, {data}')
+        if a.pg_or_yba == 'pg':
+            a.pg_gradesepv = data
+        elif a.pg_or_yba == 'yba':
+            a.yba_gradesepv = data
 
