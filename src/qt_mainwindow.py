@@ -1,21 +1,19 @@
 from PySide6.QtWidgets import (QMessageBox, QLineEdit, QLabel, QGroupBox, 
                                QFileDialog, QWidget, QPushButton, QHBoxLayout, 
                                QVBoxLayout, QCheckBox)
+from PySide6.QtCore import Qt
 from nameCheck import checkNames
 from debugprint import p
 from qt_univerr import funcerror
+from qt_advwindow import advwindow
+import qt_adv_vars as a
 from sys import argv
 import traceback
 def echo():
-    print('nameCheck present')
+    print('qt_mainwindow present')
 class DefWindow(QWidget):
     def __init__(self):
         super().__init__()
-        self.pgclist = ''
-        self.ybaclist = ''
-        self.pgcsheet = ''
-        self.ybacsheet = ''
-        self.genlog = False
 
         self.setWindowTitle("nameCheck")
 
@@ -31,17 +29,22 @@ class DefWindow(QWidget):
         self.b1tbox.setPlaceholderText('Path to HS roster')
         self.b1tbox.alignment()
         self.b1tbox.textChanged.connect(self.b1tbox_changed)
+        self.b1tbox.setText(a.pgclist)
         self.b1sbox = QLineEdit()
         self.b1sbox.setPlaceholderText('Sheet name')
         self.b1sbox.alignment()
         self.b1sbox.textChanged.connect(self.b1sbox_changed)
+        self.b1sbox.setText(a.pgcsheet)
         self.b1sbox.setFixedWidth(85)
+        b1adv = QPushButton("Advanced...")
+        b1adv.clicked.connect(self.b1adv_clicked)
 
         #1st button layout
         b1layout = QHBoxLayout()
         b1layout.addWidget(button1)
         b1layout.addWidget(self.b1tbox)
         b1layout.addWidget(self.b1sbox)
+        b1layout.addWidget(b1adv)
 
         #2nd button
         Button2label = QLabel(self)
@@ -52,20 +55,27 @@ class DefWindow(QWidget):
         self.b2tbox.setPlaceholderText('Path to YBA roster')
         self.b2tbox.alignment()
         self.b2tbox.textChanged.connect(self.b2tbox_changed)
+        self.b2tbox.setText(a.ybaclist)
         self.b2sbox = QLineEdit()
         self.b2sbox.setPlaceholderText('Sheet name')
         self.b2sbox.alignment()
         self.b2sbox.textChanged.connect(self.b2sbox_changed)
+        self.b2sbox.setText(a.ybacsheet)
         self.b2sbox.setFixedWidth(85)
+        b2adv = QPushButton("Advanced...")
+        b2adv.clicked.connect(self.b2adv_clicked)
 
         #2nd button layout
         b2layout = QHBoxLayout()
         b2layout.addWidget(button2)
         b2layout.addWidget(self.b2tbox)
         b2layout.addWidget(self.b2sbox)
+        b2layout.addWidget(b2adv)
 
         #log button
         logbutton = QCheckBox('Generate Log file', self)
+        if a.genlog == True: 
+            logbutton.setCheckState(Qt.Checked)
         logbutton.stateChanged.connect(self.logbuttonclicked)
 
         #go button
@@ -87,8 +97,25 @@ class DefWindow(QWidget):
         layout_master.addWidget(groupbox)
         self.setLayout(layout_master)
 
+    def b1adv_clicked(self):
+        a.pg_or_yba = 'pg'
+        advwin = advwindow()
+        advwin.exec()
+
+    def b2adv_clicked(self):
+        a.pg_or_yba = 'yba'
+        advwin = advwindow()
+        advwin.exec()
+
     def button1_clicked(self):
-        pgclistt = QFileDialog.getOpenFileName(self, 'Open HS roster', '.', 'Excel Spreadsheets (*.xls *.xlsx)')
+        pgclistd = QFileDialog(self)
+        pgclistd.directoryEntered.connect(self.setlastdir)
+        pgclistd.setFileMode(QFileDialog.ExistingFile)
+        pgclistd.setNameFilter('Excel Spreadsheets (*.xls *.xlsx)')
+        pgclistd.setDirectory(a.last_dir)
+        pgclistt = ''
+        if pgclistd.exec():
+            pgclistt = pgclistd.selectedFiles()
         p(str(pgclistt))
         liststart = str(pgclistt).find("'")
         listend = str(pgclistt)[liststart+1:].find("'")+liststart+1
@@ -99,7 +126,16 @@ class DefWindow(QWidget):
         self.b1tbox.setText(pgclistt)
 
     def button2_clicked(self):
-        ybaclistt = QFileDialog.getOpenFileName(self, 'Open YBA roster', '.', 'Excel Spreadsheets (*.xls *.xlsx)')
+        ybaclistd = QFileDialog(self)
+        ybaclistd.directoryEntered.connect(self.setlastdir)
+        ybaclistd.setFileMode(QFileDialog.ExistingFile)
+        ybaclistd.setNameFilter('Excel Spreadsheets (*.xls *.xlsx)')
+        ybaclistd.setDirectory(a.last_dir)
+        ybaclistt = ''
+        if ybaclistd.exec():
+            ybaclistt = ybaclistd.selectedFiles()
+#        ybaclistt.getOpenFileName(self, 'Open YBA roster', a.last_dir, 'Excel Spreadsheets (*.xls *.xlsx)')
+        
         p(str(ybaclistt))
         liststart = str(ybaclistt).find("'")
         listend = str(ybaclistt)[liststart+1:].find("'")+liststart+1
@@ -108,31 +144,37 @@ class DefWindow(QWidget):
         ybaclistt = str(ybaclistt)[liststart+1:listend]
         p(ybaclistt)
         self.b2tbox.setText(ybaclistt)
+
+    def setlastdir(self, data):
+        p(f'Last dir: {data}')
+        a.last_dir = data
     
     def logbuttonclicked(self, state):
-        self.genlog = state
-        if self.genlog == 2: self.genlog = True
-        else: self.genlog = False
-        p(f'toggle set to {self.genlog}')
+        a.genlog = state
+        if a.genlog == 2: 
+            a.genlog = True
+        else: 
+            a.genlog = False
+        p(f'toggle set to {a.genlog}')
 
     def b1tbox_changed(self, data):
         p(f'tbox1 set to {data}')
-        self.pgclist = data
+        a.pgclist = data
 
     def b2tbox_changed(self, data):
         p(f'tbox2 set to {data}')
-        self.ybaclist = data
+        a.ybaclist = data
 
     def b1sbox_changed(self, data):
         p(f'sbox1 set to {data}')
-        self.pgcsheet = data
+        a.pgcsheet = data
 
     def b2sbox_changed(self, data):
         p(f'sbox2 set to {data}')
-        self.ybacsheet = data
+        a.ybacsheet = data
 
     def gobutton_clicked(self):
-        if self.pgclist == '' or self.ybaclist == '' or self.ybacsheet == '' or self.ybacsheet == '':
+        if a.pgclist == '' or a.ybaclist == '' or a.pgcsheet == '' or a.ybacsheet == '':
             msgbox = QMessageBox(icon=QMessageBox.Information)
 #            msgbox.setInformativeText('Paths mising!')
             msgbox.setText('One or more of the spreadsheet paths/sheet names are missing. Please set these values before continuing!')
@@ -141,42 +183,13 @@ class DefWindow(QWidget):
         else: 
             p('All reqs satisfied, proceeding!')
             try: 
-                results = checkNames(self.pgclist, self.pgcsheet, self.ybaclist, self.ybacsheet, self.genlog)
+                results = checkNames()
                 msgbox = QMessageBox(icon=QMessageBox.Information)
                 msgbox.setText(results)
                 msgbox.setWindowTitle('Information')
                 msgbox.exec()  
             except Exception as e:
-                if '--debug' in argv or '-d' in argv: traceback.print_tb(e.__traceback__), print(f'Exception: {e}')
+                if '--debug' in argv or '-d' in argv: 
+                    traceback.print_tb(e.__traceback__)
+                    print(f'Exception: {e}')
                 funcerror(f'An error occured! Error: \n {e}')
-        
-
-'''
-from PySide6.QtWidgets import QWidget, QCheckBox, QPushButton, QHBoxLayout, QVBoxLayout, QGroupBox, QFileDialog
-
-class SelectWidget(QWidget):
-    def __init__(self):
-        super().__init__()
-        self.setWindowTitle('nameCheck')
-#        groupbox = QGroupBox('Import Sheets')
-        test = QCheckBox('Check Me!')
-
-#        dialog1 = QFileDialog(self)
-#        dialog1.setNameFilter('Excel Spreadsheets (*.xls *.xlsx)')
-        
-#        dialog2 = QFileDialog(self)
-#        dialog2.setNameFilter('Excel Spreadsheets (*.xls *.xlsx)')
-
-#        dialog1.fileSelected.connect(self.dialog1_set)
-
-        layout = QVBoxLayout()
-        layout.addWidget(test)
-#        layout.addWidget(dialog1)
-#        layout.addWidget(dialog2)
-
-        self.setLayout(layout)
-
-    def dialog1_set(data):
-        p(f'List set! Data: {data}')
-        pgclist = data
-'''

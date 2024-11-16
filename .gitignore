@@ -4,3 +4,4 @@ dist/*
 build/*
 config.ini
 */__pycache__/*
+*.json

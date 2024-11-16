@@ -8,6 +8,7 @@ import configparser
 import spreadsheetms as si
 import writelog as wl
 from debugprint import p
+import qt_adv_vars as a
 
 def echo():
     print('nameCheck present')
@@ -17,8 +18,8 @@ def echo():
 #p(float('nan') == float('none'))
 #quit()
 # ======
-def checkNames(pgclist, pgcsheet, ybaclist, ybacsheet, genlog):
-    #config stuffs
+def checkNames():
+    #config stuffs. Could use later.
     #config = configparser.ConfigParser()
     #cc.init_config()
     #config.read('config.ini')
@@ -36,8 +37,8 @@ def checkNames(pgclist, pgcsheet, ybaclist, ybacsheet, genlog):
     logfile = path('log.txt')
     log = ''
 
-    pglist = si.init_pg(pgclist, pgcsheet)
-    ybalist = si.init_yba(ybaclist, ybacsheet)
+    pglist = si.init_pg(a.pgclist, a.pgcsheet)
+    ybalist = si.init_yba(a.ybaclist, a.ybacsheet)
 
     pgi = pglist.index
     ybai = ybalist.index
@@ -45,8 +46,8 @@ def checkNames(pgclist, pgcsheet, ybaclist, ybacsheet, genlog):
     if logfile.exists() == False: logfile.open("x")
 
     # Add student names to lists
-    for i in pgi: pgs.append(f'{pglist.loc[i, 'Last Name']}, {pglist.loc[i, 'First Name']}')
-    for i in ybai: ybas.append(f'{ybalist.loc[i, 'Last Name']}, {ybalist.loc[i, 'First Name']}')
+    for i in pgi: pgs.append(f'{pglist.loc[i, a.pg_lastcol]}, {pglist.loc[i, a.pg_firstcol]}')
+    for i in ybai: ybas.append(f'{ybalist.loc[i, a.yba_lastcol]}, {ybalist.loc[i, a.yba_firstcol]}')
 
     # Name check
     for i in ybai:
@@ -74,7 +75,7 @@ def checkNames(pgclist, pgcsheet, ybaclist, ybacsheet, genlog):
     p('')
 
     # Write log
-    if genlog: 
+    if a.genlog: 
         wl.write_log(dat, verified, unac, pgs, noimg, pgi, logfile)
         log = 'Full list of students (un)verified/untagged/not-in-yba in log.txt file.'
 
