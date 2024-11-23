@@ -1,3 +1,21 @@
+## v0.2.3
+Small bugfix + code improvements
+### Additions
+* Pass `-v` or `--version` to the program to see the version number
+
+### Bugfixes
+* Fixed program saying "press any key to exit" on startup (aka me being an idiot)
+* Changed `except Exception` to `except BaseException`
+
+### Code Additions
+* Version stored in `ver.py`, stores version used during build process
+* `build.py` improvements:
+  * Passing `--nozip` or `-nz` will now prevent a zip file from being generated
+  * Passing `--nobuild` or `-nb` will prevent PyInstaller from rebuilding the program
+  * Passing `--onefile` or `-of` will now build the program into one file (not tested, should work)
+  * Passing `--version version_number_here` (NOT `-v`) will give a custom version number to put on the zip file (note: does not currently change the number in ver.py, so the program will still show the version number in there when passing `-v` to the executable)
+* `main.spec` will now report if the zip file it is trying to delete is not there instead of just passing the exception
+
 ## v0.2.2
 ### New Features/changes
 * Added advanced options for each path, so you can now specify custom First name and last name columns, as well as the ability to filter students by a specific column value.
