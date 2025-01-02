@@ -2,11 +2,9 @@ from PySide6.QtWidgets import (QMainWindow, QToolBar, QStatusBar,
                                QFileDialog, QMessageBox, QPushButton,
                                QProgressBar)
 from PySide6.QtGui import QIcon
-from PySide6.QtCore import Qt
 from qt_defwidget import DefWindow
 from debugprint import p
 from json_loading import *
-from sys import argv
 from os import startfile
 from nameCheck import *
 from qt_univerr import funcerror
@@ -19,6 +17,7 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.app = app
         self.adv = 0
+        self.default_json = 'data\\default.json'
 
         self.setFixedWidth(675)
         self.setFixedHeight(300)
@@ -34,9 +33,9 @@ class MainWindow(QMainWindow):
 
         save_menu = config_menu.addMenu('Save...')
 
-        save_default = save_menu.addAction("Save")
-        save_default.triggered.connect(self.save_config_default)
-        save_default.setStatusTip('Save the current config as default ("default.json")')
+        self.save_default = save_menu.addAction("Save")
+        self.save_default.triggered.connect(self.save_config_default)
+        self.save_default.setStatusTip(f'Save the current config as default ("{self.default_json}")')
 
         save_as = save_menu.addAction('As...')
         save_as.triggered.connect(self.save_config)
@@ -44,13 +43,16 @@ class MainWindow(QMainWindow):
 
         load_menu = config_menu.addMenu('Load...')
 
-        load_default = load_menu.addAction("Default")
-        load_default.triggered.connect(self.load_config_default)
-        load_default.setStatusTip('Load the default config ("default.json")')
+        self.load_default = load_menu.addAction("Default")
+        self.load_default.triggered.connect(self.load_config_default)
+        self.load_default.setStatusTip(f'Load the default config ("{self.default_json}")')
 
         load_file = load_menu.addAction('JSON file...')
         load_file.triggered.connect(self.load_config)
         load_file.setStatusTip('Load the current config into a different file')
+
+        #preferences_action = file_menu.addAction('Preferences') || TODO: Make this work
+        #preferences_action.triggered.connect(self.pref_clicked)
 
         quit_action = file_menu.addAction('Quit')
         quit_action.triggered.connect(self.quit_app)
@@ -72,7 +74,7 @@ class MainWindow(QMainWindow):
         toolbar.setMovable(0)
         toolbar.setFloatable(0)
         self.addToolBar(toolbar)
-        toolbar.addAction(save_default)
+        toolbar.addAction(self.save_default)
         toolbar.addAction(togg_adv)
 
         #go button
@@ -100,20 +102,24 @@ class MainWindow(QMainWindow):
         self.status_bar.reformat()
         
     def save_config_default(self):
-        name = 'default.json'
+        name = self.default_json
         self.statusBar().showMessage(export_json(name), 5000)
     
     def save_config(self):
         name = QFileDialog.getSaveFileName(caption='Save config as...', filter="JSON Files (*.json)")
         p(name)
         self.statusBar().showMessage(export_json(name[0]), 5000)
+        self.default_json = name[0]
     
     def updatemenus(self):
         self.central_widget.configupdate()
+    
+    #def pref_clicked(self):
+    #    p('Preferences action clicked!')
 
     def load_config_default(self):
-        name = 'default.json'
-        p('Loading default.json')
+        name = self.default_json
+        p(f'Loading "{name}"')
         self.statusBar().showMessage(import_json(name), 5000)
         self.updatemenus()
 
@@ -126,6 +132,7 @@ class MainWindow(QMainWindow):
             name = diag.selectedFiles()
             self.statusBar().showMessage(import_json(name[0]), 5000)
         self.updatemenus()
+        self.default_json = name[0]
 
     def help_button(self):
         try:
@@ -146,7 +153,6 @@ class MainWindow(QMainWindow):
     def gobutton_clicked(self):
         if a.pgclist == '' or a.ybaclist == '' or a.pgcsheet == '' or a.ybacsheet == '':
             msgbox = QMessageBox(icon=QMessageBox.Information)
-#            msgbox.setInformativeText('Paths mising!')
             msgbox.setText('One or more of the spreadsheet paths/sheet names are missing. Please set these values before continuing!')
             msgbox.setWindowTitle('Information')
             msgbox.exec()

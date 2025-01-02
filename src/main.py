@@ -6,9 +6,9 @@ if '--version' in sys.argv or '-v' in sys.argv:
     quit()
 
 import traceback
-from PySide6.QtWidgets import QApplication, QWidget
-from PySide6.QtCore import QSize
+from PySide6.QtWidgets import QApplication
 from pathlib import Path
+import os
 try:
     from qt_mainwindow import MainWindow
     from debugprint import p
@@ -55,17 +55,17 @@ I can actually see the error instead of having to guess at what died.
 
 Basically, screw you school district.
 '''
-if Path.is_file(Path('default.json')):
-    import_json('default.json')
+if Path('data').is_dir() == False:
+    p('Data path does not exist, creating...')
+    os.makedirs('data')
+if Path(os.path.abspath('data\\default.json')).is_file():
+    import_json('data\\default.json')
 app = QApplication(sys.argv)
 window = MainWindow(app)
 window.show()
 
-# not gonna set size for now, bc no real reason. once all the functionality I want is added, maybe.
-#window.setFixedSize(QSize(165, 250))
-
 app.exec()
 
 p('GUI closed, saving default.json...')
-export_json('default.json')
+export_json('data\\default.json')
 p('json successfully saved!')

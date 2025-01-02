@@ -2,10 +2,12 @@ import json
 import pathlib
 from debugprint import p
 import qt_adv_vars as a
+from pathlib import Path
+import os
 
 def import_json(name='default.json'):
     try:
-        if pathlib.Path.is_file(pathlib.Path(name)):
+        if pathlib.Path(os.path.abspath(name)).is_file():
             with open(name) as file:
                 try:
                     d = json.load(file)
@@ -45,10 +47,12 @@ def import_json(name='default.json'):
 
 def export_json(name):
     try:
-        if pathlib.Path.is_file(pathlib.Path(name)) == False:
-            if pathlib.Path.is_dir(pathlib.Path(name)):
+        if pathlib.Path(os.path.abspath(name)).is_file() == False:
+            if pathlib.Path(os.path.abspath(name)).is_dir():
                 p(f'{name} is not a file!')
                 return f'{name} is not a file!'
+            else:
+                open(Path(name), 'x')
                 
         x = {
             'last_dir': a.last_dir,
@@ -68,7 +72,7 @@ def export_json(name):
             'yba_gradesep': a.yba_gradesep,
             "yba_gradesepv": a.yba_gradesepv,
         }
-        with open(name, 'w') as f:
+        with open(Path(os.path.abspath(name)), 'w') as f:
             json.dump(x, f, indent=4)
         p(f'Saved settings to "{name}"')
         return f'Saved settings to "{name}"'

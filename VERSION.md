@@ -1,13 +1,48 @@
+## v0.2.4
+
+QMainWindow + better config loading
+
+### New Features / changes
+
+* QT loads a QMainWindow widget instead of a QWidget now, gives access to toolbars and menus
+* Added menus for "File", "Window", and "Help"
+  * "File" contains config loading stuffs
+  * "Window" contains toggle for Advanced menus
+  * "Help" Contains links to README.md and VERSION.md
+* "Go" button moved to status bar of the main window, along with a new progress bar
+* Can now save to and load from configs other than 'default.json'
+* default location for .json files is in `data` folder, created on program start
+* Advanced windows are now incorperated into the main window, thus making them no longer modal popups
+
+### Code Additions / changes
+
+* Separated json file loading and program variables into separate scripts
+* Moved "DefWidget()" to a separate file than mainwindow
+* Advanced windows no longer use the same code, and are now separated into different classes
+* Moved zip deletion code and version/readme copy code to `build.py`
+* `debugprint.p()` can be run without arguments
+* Removed many unused imports / code
+
+### Known bugs
+
+* Status tips sometimes overlap with the scroll bar (especially on loading/saving)
+* Status tips do not show up for all things it should
+
 ## v0.2.3
+
 Small bugfix + code improvements
+
 ### Additions
+
 * Pass `-v` or `--version` to the program to see the version number
 
 ### Bugfixes
+
 * Fixed program saying "press any key to exit" on startup (aka me being an idiot)
 * Changed `except Exception` to `except BaseException`
 
 ### Code Additions
+
 * Version stored in `ver.py`, stores version used during build process
 * `build.py` improvements:
   * Passing `--nozip` or `-nz` will now prevent a zip file from being generated
@@ -17,7 +52,9 @@ Small bugfix + code improvements
 * `main.spec` will now report if the zip file it is trying to delete is not there instead of just passing the exception
 
 ## v0.2.2
+
 ### New Features/changes
+
 * Added advanced options for each path, so you can now specify custom First name and last name columns, as well as the ability to filter students by a specific column value.
 * Settings are now saved to a .json file (named `default.json`), which is saved when you exit the program. This is also loaded automatically, if it exists, on program load.
 * Better handling of exceptions on program load, so even school computers that won't let you use CMD can see the stupid mistakes I make!
@@ -25,6 +62,7 @@ Small bugfix + code improvements
 * Icon now shows on QT window!
 
 ### Known bugs
+
 * Console reports that its unable to set directory to "." on first open of file dialog. Not really a bug,just annoying. Program works fine and doesn't break, properly set after closing file dialog again.
 
 ## v0.2.1

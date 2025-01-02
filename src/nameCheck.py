@@ -1,11 +1,6 @@
-import pandas as pd
-#from readchar import readchar
 from pathlib import Path as path
 from datetime import datetime as dt
 from math import isnan
-from qt_univerr import funcerror
-import configcreate as cc
-import configparser
 import spreadsheetms as si
 import writelog as wl
 from debugprint import p
@@ -14,13 +9,9 @@ import qt_adv_vars as a
 def echo():
     print('nameCheck present')
 
-# COMMAND TEST
-#p(float('nan'))
-#p(float('nan') == float('none'))
-#quit()
-# ======
 def checkNames1():
-    # Init variablesunac = []
+    # Init variables
+    a.unac = []
     a.noimg = []
     a.verified = []
     a.pgs = []
@@ -90,5 +81,3 @@ def checkNames3():
         log = ''
     p('nameCheck complete')
     return f'{results}, \n {log}'
-    #p('Press any key to exit...')
-    #k = input()

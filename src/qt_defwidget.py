@@ -1,13 +1,10 @@
-from PySide6.QtWidgets import (QMessageBox, QLineEdit, QLabel, QGroupBox, 
+from PySide6.QtWidgets import (QLineEdit, QLabel, QGroupBox, 
                                QFileDialog, QWidget, QPushButton, QHBoxLayout, 
                                QVBoxLayout, QCheckBox)
-from PySide6.QtGui import QIcon
 from PySide6.QtCore import Qt
 from debugprint import p
-from qt_univerr import funcerror
 from qt_advwindow import QPgAdvWindow, QYbaAdvWindow
 import qt_adv_vars as a
-from sys import argv
 
 class DefWindow(QWidget):
     def __init__(self):
@@ -35,15 +32,12 @@ class DefWindow(QWidget):
         self.b1sbox.textChanged.connect(self.b1sbox_changed)
         self.b1sbox.setText(a.pgcsheet)
         self.b1sbox.setFixedWidth(85)
-        #b1adv = QPushButton("Advanced...")
-        #b1adv.clicked.connect(self.b1adv_clicked)
 
         #1st button layout
         b1layout = QHBoxLayout()
         b1layout.addWidget(button1)
         b1layout.addWidget(self.b1tbox)
         b1layout.addWidget(self.b1sbox)
-        #b1layout.addWidget(b1adv)
 
         #2nd button
         Button2label = QLabel(self)
@@ -64,15 +58,12 @@ class DefWindow(QWidget):
         self.b2sbox.textChanged.connect(self.b2sbox_changed)
         self.b2sbox.setText(a.ybacsheet)
         self.b2sbox.setFixedWidth(85)
-        #b2adv = QPushButton("Advanced...")
-        #b2adv.clicked.connect(self.b2adv_clicked)
 
         #2nd button layout
         b2layout = QHBoxLayout()
         b2layout.addWidget(button2)
         b2layout.addWidget(self.b2tbox)
         b2layout.addWidget(self.b2sbox)
-        #b2layout.addWidget(b2adv)
 
         #log button
         self.logbutton = QCheckBox('Generate Log file', self)
@@ -87,7 +78,6 @@ class DefWindow(QWidget):
         buttonlayout.addWidget(Button2label)
         buttonlayout.addLayout(b2layout)
         buttonlayout.addWidget(self.logbutton)
-        #buttonlayout.addWidget(gobutton) || Go button used to be in this, was moved to qt_mainwindow when that was added.
 
         groupbox.setLayout(buttonlayout)
         groupbox.setFixedHeight(200)
@@ -120,15 +110,6 @@ class DefWindow(QWidget):
         layout_master.addWidget(self.rgroupbox)
         self.setLayout(layout_master)
 
-    #def b1adv_clicked(self):
-    #    a.pg_or_yba = 'pg'
-    #    advwin = advwindow()
-    #    advwin.exec()
-
-    #def b2adv_clicked(self):
-    #    a.pg_or_yba = 'yba'
-    #    advwin = advwindow()
-    #    advwin.exec()
     def configupdate(self):
         self.b1tbox.setText(a.pgclist)
         self.b2sbox.setText(a.pgcsheet)
@@ -169,7 +150,6 @@ class DefWindow(QWidget):
         ybaclistt = ''
         if ybaclistd.exec():
             ybaclistt = ybaclistd.selectedFiles()
-#        ybaclistt.getOpenFileName(self, 'Open YBA roster', a.last_dir, 'Excel Spreadsheets (*.xls *.xlsx)')
         
         p(str(ybaclistt))
         liststart = str(ybaclistt).find("'")

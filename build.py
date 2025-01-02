@@ -2,6 +2,9 @@ from os import scandir
 from zipfile import ZipFile
 import PyInstaller.__main__
 import src.ver as a
+from pathlib import Path
+from src.ver import ver
+from shutil import copy
 import sys
 
 z = 1
@@ -36,9 +39,16 @@ if b == 1:
     if of == 1:
         iargs.append('-F')
     PyInstaller.__main__.run(iargs)
+    copy('README.md', 'dist\\main\\README.md')
+    copy('VERSION.md', 'dist\\main\\VERSION.md')
     print('Program successfully compiled!')
 
 if z == 1:
+    print(f'Removing dist\\nameCheck-{ver}.zip...')
+    try:
+        Path.unlink(f'dist\\nameCheck-{ver}.zip')
+    except FileNotFoundError:
+        print(f'dist\\nameCheck-{ver}.zip not present, passing')
     print(' Zipping file...')
     list = []
     def dir_scan(path):

@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import (QWidget, QLineEdit, QPushButton, QHBoxLayout,
+from PySide6.QtWidgets import (QWidget, QLineEdit, QHBoxLayout,
                                 QGroupBox, QVBoxLayout, QComboBox, QLabel)
 import qt_adv_vars as a
 from debugprint import p
