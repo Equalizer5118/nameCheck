@@ -1,179 +1,147 @@
-from PySide6.QtWidgets import (QMessageBox, QLineEdit, QLabel, QGroupBox, 
-                               QFileDialog, QWidget, QPushButton, QHBoxLayout, 
-                               QVBoxLayout, QCheckBox)
+from PySide6.QtWidgets import (QMainWindow, QToolBar, QStatusBar,
+                               QFileDialog, QMessageBox, QPushButton,
+                               QProgressBar)
 from PySide6.QtGui import QIcon
 from PySide6.QtCore import Qt
-from nameCheck import checkNames
+from qt_defwidget import DefWindow
 from debugprint import p
-from qt_univerr import funcerror
-from qt_advwindow import advwindow
-import qt_adv_vars as a
+from json_loading import *
 from sys import argv
+from os import startfile
+from nameCheck import *
+from qt_univerr import funcerror
 import traceback
 def echo():
     print('qt_mainwindow present')
-class DefWindow(QWidget):
-    def __init__(self):
+
+class MainWindow(QMainWindow):
+    def __init__(self, app):
         super().__init__()
+        self.app = app
+        self.adv = 0
+
+        self.setFixedWidth(675)
+        self.setFixedHeight(300)
 
         self.setWindowTitle("nameCheck")
-        self.setWindowIcon(QIcon('_internal\\assets\\icon.ico')) # This won't work for testing, but it does in build
+        self.setWindowIcon(QIcon('_internal\\assets\\icon.ico')) # This won't work in dev testing, but it does in build
 
-        
-        groupbox = QGroupBox('nameCheck')
+        menu_bar = self.menuBar()
+        file_menu = menu_bar.addMenu('File')
+        file_menu.setStatusTip('General file actions')
+        config_menu = file_menu.addMenu('Config...')
+        config_menu.setStatusTip('Save or load current config')
 
-        #1st button
-        button1label = QLabel(self)
-        button1label.setText('Open HS roster')
-        button1 = QPushButton("Open")
-        button1.clicked.connect(self.button1_clicked)
-        self.b1tbox = QLineEdit()
-        self.b1tbox.setPlaceholderText('Path to HS roster')
-        self.b1tbox.alignment()
-        self.b1tbox.textChanged.connect(self.b1tbox_changed)
-        self.b1tbox.setText(a.pgclist)
-        self.b1sbox = QLineEdit()
-        self.b1sbox.setPlaceholderText('Sheet name')
-        self.b1sbox.alignment()
-        self.b1sbox.textChanged.connect(self.b1sbox_changed)
-        self.b1sbox.setText(a.pgcsheet)
-        self.b1sbox.setFixedWidth(85)
-        b1adv = QPushButton("Advanced...")
-        b1adv.clicked.connect(self.b1adv_clicked)
+        save_menu = config_menu.addMenu('Save...')
 
-        #1st button layout
-        b1layout = QHBoxLayout()
-        b1layout.addWidget(button1)
-        b1layout.addWidget(self.b1tbox)
-        b1layout.addWidget(self.b1sbox)
-        b1layout.addWidget(b1adv)
+        save_default = save_menu.addAction("Save")
+        save_default.triggered.connect(self.save_config_default)
+        save_default.setStatusTip('Save the current config as default ("default.json")')
 
-        #2nd button
-        Button2label = QLabel(self)
-        Button2label.setText('Open YBA covrep')
-        button2 = QPushButton("Open")
-        button2.clicked.connect(self.button2_clicked)
-        self.b2tbox = QLineEdit()
-        self.b2tbox.setPlaceholderText('Path to YBA roster')
-        self.b2tbox.alignment()
-        self.b2tbox.textChanged.connect(self.b2tbox_changed)
-        self.b2tbox.setText(a.ybaclist)
-        self.b2sbox = QLineEdit()
-        self.b2sbox.setPlaceholderText('Sheet name')
-        self.b2sbox.alignment()
-        self.b2sbox.textChanged.connect(self.b2sbox_changed)
-        self.b2sbox.setText(a.ybacsheet)
-        self.b2sbox.setFixedWidth(85)
-        b2adv = QPushButton("Advanced...")
-        b2adv.clicked.connect(self.b2adv_clicked)
+        save_as = save_menu.addAction('As...')
+        save_as.triggered.connect(self.save_config)
+        save_as.setStatusTip('Save the current config into a different file')
 
-        #2nd button layout
-        b2layout = QHBoxLayout()
-        b2layout.addWidget(button2)
-        b2layout.addWidget(self.b2tbox)
-        b2layout.addWidget(self.b2sbox)
-        b2layout.addWidget(b2adv)
+        load_menu = config_menu.addMenu('Load...')
 
-        #log button
-        logbutton = QCheckBox('Generate Log file', self)
-        if a.genlog == True: 
-            logbutton.setCheckState(Qt.Checked)
-        logbutton.stateChanged.connect(self.logbuttonclicked)
+        load_default = load_menu.addAction("Default")
+        load_default.triggered.connect(self.load_config_default)
+        load_default.setStatusTip('Load the default config ("default.json")')
+
+        load_file = load_menu.addAction('JSON file...')
+        load_file.triggered.connect(self.load_config)
+        load_file.setStatusTip('Load the current config into a different file')
+
+        quit_action = file_menu.addAction('Quit')
+        quit_action.triggered.connect(self.quit_app)
+        quit_action.setStatusTip("Exits the program (duh)")
+
+        window_menu = menu_bar.addMenu('Window')
+        togg_adv = window_menu.addAction('Toggle Advanced Windows')
+        togg_adv.triggered.connect(self.adv_togg)
+
+        help_menu = menu_bar.addMenu('Help')
+        help_action = help_menu.addAction('README.md')
+        help_action.triggered.connect(self.help_button)
+        help_action.setStatusTip('Opens the readme file (README.MD)')
+        version_action = help_menu.addAction('Changelog')
+        version_action.triggered.connect(self.version_button)
+        version_action.setStatusTip('Opens the changelog file (VERSION.MD)')
+
+        toolbar = QToolBar('Main Toolbar')
+        toolbar.setMovable(0)
+        toolbar.setFloatable(0)
+        self.addToolBar(toolbar)
+        toolbar.addAction(save_default)
+        toolbar.addAction(togg_adv)
 
         #go button
         gobutton = QPushButton("Go!")
         gobutton.clicked.connect(self.gobutton_clicked)
+        gobutton.setStatusTip('Run the comparing script')
+        gobutton.setMinimumWidth(100)
+
+        # Progress bar
+        self.progress_bar = QProgressBar()
+        self.progress_bar.setTextVisible(1)
+        self.progress_bar.setMaximum(3)
+        self.progress_bar.setMaximumWidth(300)
+        self.progress_bar.setValue(3)
+
+        self.central_widget = DefWindow()
+
+        self.setCentralWidget(self.central_widget)
+
+        self.status_bar = QStatusBar(self)
+        self.setStatusBar(self.status_bar)
+        self.status_bar.setSizeGripEnabled(0)
+        self.status_bar.addPermanentWidget(self.progress_bar)
+        self.status_bar.addPermanentWidget(gobutton, 0.7)
+        self.status_bar.reformat()
         
-        #final layout
-        buttonlayout = QVBoxLayout()
-        buttonlayout.addWidget(button1label)
-        buttonlayout.addLayout(b1layout)
-        buttonlayout.addWidget(Button2label)
-        buttonlayout.addLayout(b2layout)
-        buttonlayout.addWidget(logbutton)
-        buttonlayout.addWidget(gobutton)
-
-        groupbox.setLayout(buttonlayout)
-
-        layout_master = QVBoxLayout(self)
-        layout_master.addWidget(groupbox)
-        self.setLayout(layout_master)
-
-    def b1adv_clicked(self):
-        a.pg_or_yba = 'pg'
-        advwin = advwindow()
-        advwin.exec()
-
-    def b2adv_clicked(self):
-        a.pg_or_yba = 'yba'
-        advwin = advwindow()
-        advwin.exec()
-
-    def button1_clicked(self):
-        pgclistd = QFileDialog(self)
-        pgclistd.directoryEntered.connect(self.setlastdir)
-        pgclistd.setFileMode(QFileDialog.ExistingFile)
-        pgclistd.setNameFilter('Excel Spreadsheets (*.xls *.xlsx)')
-        pgclistd.setDirectory(a.last_dir)
-        pgclistt = ''
-        if pgclistd.exec():
-            pgclistt = pgclistd.selectedFiles()
-        p(str(pgclistt))
-        liststart = str(pgclistt).find("'")
-        listend = str(pgclistt)[liststart+1:].find("'")+liststart+1
-        p(liststart)
-        p(listend)
-        pgclistt = str(pgclistt)[liststart+1:listend]
-        p(pgclistt)
-        self.b1tbox.setText(pgclistt)
-
-    def button2_clicked(self):
-        ybaclistd = QFileDialog(self)
-        ybaclistd.directoryEntered.connect(self.setlastdir)
-        ybaclistd.setFileMode(QFileDialog.ExistingFile)
-        ybaclistd.setNameFilter('Excel Spreadsheets (*.xls *.xlsx)')
-        ybaclistd.setDirectory(a.last_dir)
-        ybaclistt = ''
-        if ybaclistd.exec():
-            ybaclistt = ybaclistd.selectedFiles()
-#        ybaclistt.getOpenFileName(self, 'Open YBA roster', a.last_dir, 'Excel Spreadsheets (*.xls *.xlsx)')
-        
-        p(str(ybaclistt))
-        liststart = str(ybaclistt).find("'")
-        listend = str(ybaclistt)[liststart+1:].find("'")+liststart+1
-        p(liststart)
-        p(listend)
-        ybaclistt = str(ybaclistt)[liststart+1:listend]
-        p(ybaclistt)
-        self.b2tbox.setText(ybaclistt)
-
-    def setlastdir(self, data):
-        p(f'Last dir: {data}')
-        a.last_dir = data
+    def save_config_default(self):
+        name = 'default.json'
+        self.statusBar().showMessage(export_json(name), 5000)
     
-    def logbuttonclicked(self, state):
-        a.genlog = state
-        if a.genlog == 2: 
-            a.genlog = True
-        else: 
-            a.genlog = False
-        p(f'toggle set to {a.genlog}')
+    def save_config(self):
+        name = QFileDialog.getSaveFileName(caption='Save config as...', filter="JSON Files (*.json)")
+        p(name)
+        self.statusBar().showMessage(export_json(name[0]), 5000)
+    
+    def updatemenus(self):
+        self.central_widget.configupdate()
 
-    def b1tbox_changed(self, data):
-        p(f'tbox1 set to {data}')
-        a.pgclist = data
+    def load_config_default(self):
+        name = 'default.json'
+        p('Loading default.json')
+        self.statusBar().showMessage(import_json(name), 5000)
+        self.updatemenus()
 
-    def b2tbox_changed(self, data):
-        p(f'tbox2 set to {data}')
-        a.ybaclist = data
+    def load_config(self):
+        p('Loading from selected json')
+        diag = QFileDialog(self)
+        diag.setNameFilter('JSON files (*.json)')
+        diag.setFileMode(QFileDialog.ExistingFile)
+        if diag.exec():
+            name = diag.selectedFiles()
+            self.statusBar().showMessage(import_json(name[0]), 5000)
+        self.updatemenus()
 
-    def b1sbox_changed(self, data):
-        p(f'sbox1 set to {data}')
-        a.pgcsheet = data
+    def help_button(self):
+        try:
+            startfile('README.md')
+        except:
+            funcerror('README.md does not exist!')
+            return
+        self.statusBar().showMessage('Opening README file in default editor...', 5000)
 
-    def b2sbox_changed(self, data):
-        p(f'sbox2 set to {data}')
-        a.ybacsheet = data
+    def version_button(self):
+        try:
+            startfile('VERSION.md')
+        except:
+            funcerror('VERSION.md does not exist!')
+            return
+        self.statusBar().showMessage('Opening VERSION file in default editor...', 5000)
 
     def gobutton_clicked(self):
         if a.pgclist == '' or a.ybaclist == '' or a.pgcsheet == '' or a.ybacsheet == '':
@@ -185,19 +153,40 @@ class DefWindow(QWidget):
         else: 
             p('All reqs satisfied, proceeding!')
             try: 
-                results = checkNames()
+                self.progress_bar.setValue(0)
+                checkNames1()
+                self.progress_bar.setValue(1)
+                checkNames2()
+                self.progress_bar.setValue(2)
+                results = checkNames3()
+                self.progress_bar.setValue(3)
                 msgbox = QMessageBox(icon=QMessageBox.Information)
                 msgbox.setText(results)
                 msgbox.setWindowTitle('Information')
                 msgbox.exec()  
-            except Exception as e:
+            except BaseException as e:
                 traceback.print_tb(e.__traceback__)
                 print(f'Exception: {e}')
 
                 funcerror(f'An error occured! Error: \n {e}')
+
                 ''' again, we are accepting every exception. why????
-                    Well here, its a bit different. If there is an exception, I want the function to stop
-                    however, I also want to report the exception to the user for debugging purposes
-                    thats why I except every error then put it in a qt popup, so its easier to digest for the user
+                    Well here, its a bit different. If there is an exception, I want the function to stop.
+                    however, I also want to report the exception to the user for debugging purposes.
+                    thats why I except every error then put it in a qt popup, so its easier to digest for the user.
                     the full trace still gets put in console, but the user can understand what the error was.
                 '''
+    
+    def adv_togg(self):
+        if self.adv == 0:
+            self.adv = 1
+            self.central_widget.showadvwindows()
+            self.setFixedHeight(530)
+        else:
+            self.adv = 0
+            self.central_widget.hideadvwindows()
+            self.setFixedHeight(300)
+
+    def quit_app(self):
+        print('quit triggered!')
+        self.app.quit()

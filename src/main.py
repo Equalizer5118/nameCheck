@@ -10,9 +10,9 @@ from PySide6.QtWidgets import QApplication, QWidget
 from PySide6.QtCore import QSize
 from pathlib import Path
 try:
-    from qt_mainwindow import DefWindow
+    from qt_mainwindow import MainWindow
     from debugprint import p
-    from qt_adv_vars import export_json
+    from json_loading import *
 except KeyError as ke:
     '''
     This catches any errors with loading the json file. The logic for checking if it exists is in qt_adv_vars,
@@ -27,7 +27,7 @@ except KeyError as ke:
     Path.unlink(Path('default.json'))
     print('json deleted! reloading modules...')
     try:
-        from qt_mainwindow import DefWindow
+        from qt_mainwindow import MainWindow
         from debugprint import p
         from qt_adv_vars import export_json
     except BaseException as e:
@@ -44,6 +44,7 @@ except BaseException as e:
     print(f'Exception: {e}')
     input('Press enter to close the program...')
     exit()
+
 '''
 You might rightfully be asking "Equal, why are you catching every exception? Isnt that a bad practice?"
 and normally, yeah, it is. The problem is that my school computers won't let us open up CMD.
@@ -54,14 +55,17 @@ I can actually see the error instead of having to guess at what died.
 
 Basically, screw you school district.
 '''
+if Path.is_file(Path('default.json')):
+    import_json('default.json')
 app = QApplication(sys.argv)
-window = DefWindow()
+window = MainWindow(app)
 window.show()
+
 # not gonna set size for now, bc no real reason. once all the functionality I want is added, maybe.
 #window.setFixedSize(QSize(165, 250))
 
 app.exec()
 
 p('GUI closed, saving default.json...')
-export_json('default')
+export_json('default.json')
 p('json successfully saved!')

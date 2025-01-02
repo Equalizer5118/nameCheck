@@ -27,7 +27,7 @@ if z == 0 and b == 0:
     print('Why tf are you not building or zipping? Why are you even running this script? \n'\
           'I mean, seriously, whats the point? Ur just wasting time. In the time it took you to type out \n'\
           'the full program name AND the arguments, you could have done quite litterally anything else. \n' \
-          'your mind truely is in interesting place...')
+          'your mind truely is an interesting place...')
     print('Now that ur done wasting both of our time,')
 
 if b == 1:

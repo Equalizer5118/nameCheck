@@ -9,7 +9,7 @@ a = Analysis(
     binaries=[],
     datas=[('..\\assets\\icon.ico', 'assets'), ('configcreate.py','.'), ('debugprint.py','.'), 
            ('nameCheck.py','.'), ('qt_mainwindow.py','.'), ('qt_univerr.py','.'), ('spreadsheetms.py','.'), 
-           ('writelog.py','.'), ('qt_advwindow.py','.'), ('qt_adv_vars.py','.'), ('ver.py','.')],
+           ('writelog.py','.'), ('qt_advwindow.py','.'), ('qt_adv_vars.py','.'), ('ver.py','.'), ('qt_defwidget.py','.'), ('json_loading.py','.')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
