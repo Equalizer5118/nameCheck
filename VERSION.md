@@ -1,3 +1,16 @@
+## v0.2.5
+
+Name similarity checking
+
+### New Features / changes
+
+* Program automatically checks for similarities between roster names not in YBA and unverified names (learned why this feature is important the hard way)
+  * Now dumped into the log
+
+### Code Additions
+
+* Added comments for the variables that may be obscure
+
 ## v0.2.4
 
 QMainWindow + better config loading

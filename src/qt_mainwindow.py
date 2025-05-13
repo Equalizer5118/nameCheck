@@ -170,18 +170,26 @@ class MainWindow(QMainWindow):
                 msgbox.setText(results)
                 msgbox.setWindowTitle('Information')
                 msgbox.exec()  
+            except ValueError as ve:
+                traceback.print_tb(ve.__traceback__)
+                print(f'ValueError: {ve}')
+                funcerror(f'Sheet name does not exist! Error: \n{ve}')
+            except FileNotFoundError as fnfe:
+                traceback.print_tb(fnfe.__traceback__)
+                print(f'ValueError: {fnfe}')
+                funcerror(f'File not found! Error: \n{fnfe}')
             except BaseException as e:
                 traceback.print_tb(e.__traceback__)
                 print(f'Exception: {e}')
 
-                funcerror(f'An error occured! Error: \n {e}')
+                funcerror(f'Unhandled Exception! Error: \n {e}')
 
-                ''' again, we are accepting every exception. why????
+    ''' again, we are accepting every exception. why????
                     Well here, its a bit different. If there is an exception, I want the function to stop.
                     however, I also want to report the exception to the user for debugging purposes.
                     thats why I except every error then put it in a qt popup, so its easier to digest for the user.
                     the full trace still gets put in console, but the user can understand what the error was.
-                '''
+    '''
     
     def adv_togg(self):
         if self.adv == 0:
