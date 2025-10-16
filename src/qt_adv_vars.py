@@ -43,4 +43,6 @@ pglist = ''
 ybalist = ''
 pgi = ''
 ybai = ''
+pgmid = ''
 namesim = []
+debug = 0

@@ -1,3 +1,14 @@
+## v0.2.6
+
+Bugfixes + refactoring
+
+### Bugfixes
+* Fixed bug where program has a heart attack due to looking at the wrong list
+* Fixed results reporting the entire list of students in a sheet and not just ones in the grade, even if grade divider is set to column
+
+### Changes
+* Collapsed Save and Load buttons into one menu instead of two
+* Minor code refactoring
 ## v0.2.5
 
 Name similarity checking

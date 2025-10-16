@@ -77,7 +77,7 @@ def checkNames1():
             p(f'Name doesnt fir criteria, tossing. checked {a.yba_gradesep} and got {int(a.ybalist.loc[i, a.yba_gradesep])}, should have gotten {int(a.yba_gradesepv)}.')
         else: 
             a.ybas.append(f'{a.ybalist.loc[i, a.yba_lastcol]}, {a.ybalist.loc[i, a.yba_firstcol]}')
-
+    a.pgmid = len(a.pgs)
     # Last check to see if this is boken
     if len(a.pgs) == 0:
         raise ValueError('Length of pgs == 0. Check your Column var in Advanced options!')
@@ -86,7 +86,9 @@ def checkNames1():
 
 def checkNames2():
     # Name check
-    for i in a.ybai:
+    i = 1
+    while i < len(a.ybas):
+        p(i)
         if a.ybas[i] in a.pgs:
             a.verified.append(a.ybas[i])
             p(a.ybalist.loc[i, 'Used on Page(s)'])
@@ -102,6 +104,7 @@ def checkNames2():
             a.pgs.remove(a.ybas[i])
         else:
             a.unac.append(f'{a.ybas[i]}')
+        i += 1
 
 def checkNames3():
     if len(a.pgs) != 0:
@@ -109,7 +112,7 @@ def checkNames3():
     else: 
         p('No Unverified names, skipping similarity check')
     
-    results = f'In total: {len(a.verified)}/{len(a.pgi)} students were verified leaving {len(a.unac)} unverified students in Yearbook Avenue, and {len(a.noimg)}/{len(a.verified)} verified students had untagged images.\n' \
+    results = f'In total: {len(a.verified)}/{a.pgmid} students were verified leaving {len(a.unac)} unverified students in Yearbook Avenue, and {len(a.noimg)}/{len(a.verified)} verified students had untagged images.\n' \
       f'Additionally, {len(a.pgs)} students were either not in Yearbook Avenue or otherwise failed to verify, or could have multiple last names, with {len(a.namesim)} of those names having possible matches'
     # Initial Results
     p('')
@@ -118,7 +121,7 @@ def checkNames3():
 
     # Write log
     if a.genlog: 
-        wl.write_log(a.dat, a.verified, a.unac, a.pgs, a.noimg, a.pgi, a.logfile, a.pgclist, a.pgcsheet, a.ybaclist, a.ybacsheet, a.namesim)
+        wl.write_log(a.dat, a.verified, a.unac, a.pgs, a.noimg, results, a.logfile, a.pgclist, a.pgcsheet, a.ybaclist, a.ybacsheet, a.namesim)
         log = 'Full list of students (un)verified/untagged/not-in-yba in log.txt file.'
     else:
         log = ''

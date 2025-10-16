@@ -4,7 +4,10 @@ if '--version' in sys.argv or '-v' in sys.argv:
     print(f'nameCheck version: {ver}')
     input('Press enter to close the program...')
     quit()
-
+if '--debug' in sys.argv or '-d' in sys.argv:
+    from qt_adv_vars import debug
+    debug = 1
+    
 import traceback
 from PySide6.QtWidgets import QApplication
 from pathlib import Path

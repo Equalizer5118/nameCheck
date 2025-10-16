@@ -31,23 +31,21 @@ class MainWindow(QMainWindow):
         config_menu = file_menu.addMenu('Config...')
         config_menu.setStatusTip('Save or load current config')
 
-        save_menu = config_menu.addMenu('Save...')
-
-        self.save_default = save_menu.addAction("Save")
+        self.save_default = config_menu.addAction("Save")
         self.save_default.triggered.connect(self.save_config_default)
         self.save_default.setStatusTip(f'Save the current config as default ("{self.default_json}")')
 
-        save_as = save_menu.addAction('As...')
+        save_as = config_menu.addAction('Save As...')
         save_as.triggered.connect(self.save_config)
         save_as.setStatusTip('Save the current config into a different file')
 
-        load_menu = config_menu.addMenu('Load...')
+        divider = config_menu.addSeparator()
 
-        self.load_default = load_menu.addAction("Default")
+        self.load_default = config_menu.addAction("Load Default")
         self.load_default.triggered.connect(self.load_config_default)
         self.load_default.setStatusTip(f'Load the default config ("{self.default_json}")')
 
-        load_file = load_menu.addAction('JSON file...')
+        load_file = config_menu.addAction('Load JSON file...')
         load_file.triggered.connect(self.load_config)
         load_file.setStatusTip('Load the current config into a different file')
 
@@ -135,12 +133,13 @@ class MainWindow(QMainWindow):
         self.default_json = name[0]
 
     def help_button(self):
-        try:
-            startfile('README.md')
-        except:
-            funcerror('README.md does not exist!')
-            return
-        self.statusBar().showMessage('Opening README file in default editor...', 5000)
+        if a.debug == 1:
+            try:
+                startfile('README.md')
+            except:
+                funcerror('README.md does not exist!')
+                return
+            self.statusBar().showMessage('Opening README file in default editor...', 5000)
 
     def version_button(self):
         try:
@@ -149,8 +148,20 @@ class MainWindow(QMainWindow):
             funcerror('VERSION.md does not exist!')
             return
         self.statusBar().showMessage('Opening VERSION file in default editor...', 5000)
-
+     
     def gobutton_clicked(self):
+        def go():
+            self.progress_bar.setValue(0)
+            checkNames1()
+            self.progress_bar.setValue(1)
+            checkNames2()
+            self.progress_bar.setValue(2)
+            results = checkNames3()
+            self.progress_bar.setValue(3)
+            msgbox = QMessageBox(icon=QMessageBox.Information)
+            msgbox.setText(results)
+            msgbox.setWindowTitle('Information')
+            msgbox.exec() 
         if a.pgclist == '' or a.ybaclist == '' or a.pgcsheet == '' or a.ybacsheet == '':
             msgbox = QMessageBox(icon=QMessageBox.Information)
             msgbox.setText('One or more of the spreadsheet paths/sheet names are missing. Please set these values before continuing!')
@@ -158,31 +169,24 @@ class MainWindow(QMainWindow):
             msgbox.exec()
         else: 
             p('All reqs satisfied, proceeding!')
-            try: 
-                self.progress_bar.setValue(0)
-                checkNames1()
-                self.progress_bar.setValue(1)
-                checkNames2()
-                self.progress_bar.setValue(2)
-                results = checkNames3()
-                self.progress_bar.setValue(3)
-                msgbox = QMessageBox(icon=QMessageBox.Information)
-                msgbox.setText(results)
-                msgbox.setWindowTitle('Information')
-                msgbox.exec()  
-            except ValueError as ve:
-                traceback.print_tb(ve.__traceback__)
-                print(f'ValueError: {ve}')
-                funcerror(f'Sheet name does not exist! Error: \n{ve}')
-            except FileNotFoundError as fnfe:
-                traceback.print_tb(fnfe.__traceback__)
-                print(f'ValueError: {fnfe}')
-                funcerror(f'File not found! Error: \n{fnfe}')
-            except BaseException as e:
-                traceback.print_tb(e.__traceback__)
-                print(f'Exception: {e}')
-
-                funcerror(f'Unhandled Exception! Error: \n {e}')
+            if a.debug == 1: 
+                try: 
+                    go()
+                except ValueError as ve:
+                    traceback.print_tb(ve.__traceback__)
+                    print(f'ValueError: {ve}')
+                    funcerror(f'Sheet name does not exist! Error: \n{ve}')
+                except FileNotFoundError as fnfe:
+                    traceback.print_tb(fnfe.__traceback__)
+                    print(f'ValueError: {fnfe}')
+                    funcerror(f'File not found! Error: \n{fnfe}')
+                except BaseException as e:
+                    traceback.print_tb(e.__traceback__)
+                    print(f'Exception: {e}')
+                    funcerror(f'Unhandled Exception! Error: \n {e}')
+            else:
+                go()
+            
 
     ''' again, we are accepting every exception. why????
                     Well here, its a bit different. If there is an exception, I want the function to stop.

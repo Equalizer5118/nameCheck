@@ -1,4 +1,4 @@
-def write_log(d, v, uc, pgs, nimg, pgi, lf, pgl = 'N/A', pgcs = 'N/A', ybl = 'N/A', ybcs = 'N/A', sim = 'N/A'):
+def write_log(d, v, uc, pgs, nimg, results, lf, pgl = 'N/A', pgcs = 'N/A', ybl = 'N/A', ybcs = 'N/A', sim = 'N/A'):
  simprint = ""
  if sim != 'N/A':
   for i in sim:
@@ -29,8 +29,7 @@ def write_log(d, v, uc, pgs, nimg, pgi, lf, pgl = 'N/A', pgcs = 'N/A', ybl = 'N/
  '\n' \
  '\n' \
  '\n' \
- f'In total: {len(v)}/{len(pgi)} students were verified leaving {len(uc)} unverified students in Yearbook Avenue, and {len(nimg)}/{len(v)} verified students had untagged images. \n' \
- f'Additionally, {len(pgs)} students were either not in Yearbook Avenue or otherwise failed to verify, or could have multiple last names, with {len(simprint)} of those names having possible matches. \n' \
+ f'{results}'
  '==============================================================\n' \
  '\n' 
  
