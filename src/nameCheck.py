@@ -9,13 +9,12 @@ import qt_adv_vars as a
 def echo():
     print('nameCheck present')
 
-
-
 def catchLastNameSimilarity():
     p()
-        # BC my school's admin is fucking stupid, they give us gov names and not preferred names. As stupid as this is, we have to catch it otherwise yearbooks will get recalled
+        # BC my school's admin is stupid, they give us gov names and not preferred names. As stupid as this is, we have to catch it otherwise yearbooks will get recalled
         # This checks names in the not in YBA list and compares to the unverified list (doesnt check verified list, as not needed),
         # 1700 yearbooks recalled for 1 name, who wasn't even in the yearbook other than that person's portrait image... 
+        # This still might not catch everything, but its better than nothing
 
     for i in a.pgs:
         listsave = []
@@ -50,6 +49,7 @@ def catchLastNameSimilarity():
 def checkNames1():
     # Init variables
     a.unac = [] # unverified students
+    a.namesim = [] # names with possible similarities
     a.noimg = [] # students verified with no images
     a.verified = [] # verified with at least portrait
     a.pgs = [] # students in roster to check, after nameCheck2() this turns into the students who are not in YBA
@@ -58,8 +58,8 @@ def checkNames1():
     a.logfile = path('log.txt') # log file path and name
     a.log = '' # init log file text (is this needed?)
 
-    a.pglist = si.init_pg(a.pgclist, a.pgcsheet) # raw data sheet from text box
-    a.ybalist = si.init_yba(a.ybaclist, a.ybacsheet) # raw data sheet from text box
+    a.pglist = si.init_sheet(a.pgclist, a.pgcsheet) # raw data sheet from text box
+    a.ybalist = si.init_sheet(a.ybaclist, a.ybacsheet) # raw data sheet from text box
 
     a.pgi = a.pglist.index # creates an array with the amount of students in the list, so we can iterate in loops
     a.ybai = a.ybalist.index # creates an array with the amount of students in the list, so we can iterate in loops

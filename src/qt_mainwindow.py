@@ -1,14 +1,14 @@
 from PySide6.QtWidgets import (QMainWindow, QToolBar, QStatusBar,
                                QFileDialog, QMessageBox, QPushButton,
-                               QProgressBar, QCheckBox)
-from PySide6.QtCore import QEvent
+                               QProgressBar, QCheckBox, QWidget)
+from PySide6.QtCore import QEvent, Qt
 from PySide6.QtGui import QIcon
 from qt_defwidget import DefWindow
 from debugprint import p
 from json_loading import *
 import pyquark # Dear CodeWizard777 from random stackoverflow thread, I love you. Why is os.startfile windows only??????
 from nameCheck import *
-from qt_univerr import funcerror
+from qt_univerr import funcerror, notice
 import traceback
 def echo():
     print('qt_mainwindow present')
@@ -21,7 +21,7 @@ class MainWindow(QMainWindow):
         self.adv = False
         self.default_json = 'data\\default.json'
 
-        self.setFixedWidth(675)
+        self.setFixedWidth(700)
         self.setFixedHeight(300)
 
         self.setWindowTitle("nameCheck")
@@ -176,27 +176,20 @@ class MainWindow(QMainWindow):
             self.progress_bar.setValue(2)
             results = checkNames3()
             self.progress_bar.setValue(3)
-            msgbox = QMessageBox(icon=QMessageBox.Information)
-            msgbox.setText(results)
-            msgbox.setWindowTitle('Information')
-            p('finished, setting up info window')
-            p(a.log)
+            p('Finished namecheck')
+            msgbox = notice(reason = results)
             if a.log != '': msgbox.setStandardButtons(QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Open)
             ret = msgbox.exec()
             if ret == QMessageBox.StandardButton.Open:
                 pyquark.filestart('log.txt')
 
         if a.pgclist == '' or a.ybaclist == '' or a.pgcsheet == '' or a.ybacsheet == '':
-            msgbox = QMessageBox(icon=QMessageBox.Information)
-            msgbox.setText('One or more of the spreadsheet paths/sheet names are missing. Please set these values before continuing!')
-            msgbox.setWindowTitle('Information')
+            msgbox = notice(reason='One or more of the spreadsheet paths/sheet names are missing. Please set these values before continuing!')
             msgbox.exec()
             return 1
         if a.pgclist == a.ybaclist and a.dontshowdupe != 2:
             p('Hold it!')
-            msgbox = QMessageBox(icon=QMessageBox.Information)
-            msgbox.setText('Spreadsheet paths are identical! Are you sure you want to proceed?')
-            msgbox.setWindowTitle('Information')
+            msgbox = notice(reason='Spreadsheet paths are identical! Are you sure you want to proceed?')
 
             chkbox = QCheckBox()
             chkbox.setText('Do not show again')
@@ -245,11 +238,15 @@ class MainWindow(QMainWindow):
         if self.adv:
             self.central_widget.showadvwindows()
             self.setFixedHeight(530)
-            p("Set Size 300")
+            self.setMaximumHeight(530)
+            self.setFixedSize(700, 530)
+            p("Set Size 530")
         else:
             self.central_widget.hideadvwindows()
             self.setFixedHeight(300)
-            p("Set Size 540")
+            self.setMaximumHeight(300)
+            self.setFixedSize(700, 300)
+            p("Set Size 300")
     def adv_togg(self):
         self.adv = not self.adv
         self.check_size()
@@ -259,3 +256,9 @@ class MainWindow(QMainWindow):
     def quit_app(self):
         print('quit triggered!')
         self.app.quit()
+
+class Preferences(QWidget):
+    def __init__(self, app):
+        super().__init__()
+        self.app = app
+        
