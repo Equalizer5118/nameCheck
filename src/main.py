@@ -5,8 +5,8 @@ if '--version' in sys.argv or '-v' in sys.argv:
     input('Press enter to close the program...')
     quit()
 if '--debug' in sys.argv or '-d' in sys.argv:
-    from qt_adv_vars import debug
-    debug = 1
+    import qt_adv_vars as a
+    a.debug = 1
     
 import traceback
 from PySide6.QtWidgets import QApplication

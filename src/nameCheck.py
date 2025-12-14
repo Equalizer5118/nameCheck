@@ -58,13 +58,13 @@ def checkNames1():
     a.logfile = path('log.txt') # log file path and name
     a.log = '' # init log file text (is this needed?)
 
-    a.pglist = si.init_pg(a.pgclist, a.pgcsheet) 
-    a.ybalist = si.init_yba(a.ybaclist, a.ybacsheet)
+    a.pglist = si.init_pg(a.pgclist, a.pgcsheet) # raw data sheet from text box
+    a.ybalist = si.init_yba(a.ybaclist, a.ybacsheet) # raw data sheet from text box
 
-    a.pgi = a.pglist.index
-    a.ybai = a.ybalist.index
+    a.pgi = a.pglist.index # creates an array with the amount of students in the list, so we can iterate in loops
+    a.ybai = a.ybalist.index # creates an array with the amount of students in the list, so we can iterate in loops
 
-    if a.logfile.exists() == False: a.logfile.open("x")
+    if a.logfile.exists() == False: a.logfile.open("x") # creates log.txt if it doesn't exist
 
     # Add student names to lists
     for i in a.pgi: 
@@ -122,8 +122,8 @@ def checkNames3():
     # Write log
     if a.genlog: 
         wl.write_log(a.dat, a.verified, a.unac, a.pgs, a.noimg, results, a.logfile, a.pgclist, a.pgcsheet, a.ybaclist, a.ybacsheet, a.namesim)
-        log = 'Full list of students (un)verified/untagged/not-in-yba in log.txt file.'
+        a.log = 'Full list of students (un)verified/untagged/not-in-yba in log.txt file.'
     else:
-        log = ''
+        a.log = ''
     p('nameCheck complete')
-    return f'{results}, \n{log}'
+    return f'{results}, \n{a.log}'

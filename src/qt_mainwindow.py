@@ -1,11 +1,12 @@
 from PySide6.QtWidgets import (QMainWindow, QToolBar, QStatusBar,
                                QFileDialog, QMessageBox, QPushButton,
-                               QProgressBar)
+                               QProgressBar, QCheckBox)
+from PySide6.QtCore import QEvent
 from PySide6.QtGui import QIcon
 from qt_defwidget import DefWindow
 from debugprint import p
 from json_loading import *
-from os import startfile
+import pyquark # Dear CodeWizard777 from random stackoverflow thread, I love you. Why is os.startfile windows only??????
 from nameCheck import *
 from qt_univerr import funcerror
 import traceback
@@ -15,8 +16,9 @@ def echo():
 class MainWindow(QMainWindow):
     def __init__(self, app):
         super().__init__()
+        self.ready = False
         self.app = app
-        self.adv = 0
+        self.adv = False
         self.default_json = 'data\\default.json'
 
         self.setFixedWidth(675)
@@ -98,7 +100,19 @@ class MainWindow(QMainWindow):
         self.status_bar.addPermanentWidget(self.progress_bar)
         self.status_bar.addPermanentWidget(gobutton, 0.7)
         self.status_bar.reformat()
+        self.ready = True
         
+        # attempted fix for window size change on unfocus in Linux. || TODO: #2 Make this work
+    '''    
+    def focusInEvent(self, event):  
+        p(self.size())
+        if self.ready: 
+            p("ready, checking size")
+            self.check_size()
+            p(self.size())
+        return super().changeEvent(event)
+    '''
+    
     def save_config_default(self):
         name = self.default_json
         self.statusBar().showMessage(export_json(name), 5000)
@@ -133,23 +147,27 @@ class MainWindow(QMainWindow):
         self.default_json = name[0]
 
     def help_button(self):
-        if a.debug == 1:
-            try:
-                startfile('README.md')
-            except:
-                funcerror('README.md does not exist!')
-                return
-            self.statusBar().showMessage('Opening README file in default editor...', 5000)
+        try:
+            pyquark.filestart('README.md')
+        except:
+            funcerror('README.md does not exist!')
+            return
+        self.statusBar().showMessage('Opening README file in default editor...', 5000)
 
     def version_button(self):
         try:
-            startfile('VERSION.md')
+            pyquark.filestart('VERSION.md')
         except:
-            funcerror('VERSION.md does not exist!')
+            funcerror('VERSION.md does not exist! HELP!')
             return
         self.statusBar().showMessage('Opening VERSION file in default editor...', 5000)
-     
+
+    def dont_show(self, state):
+        a.dontshowdupe = state
+        p(a.dontshowdupe)
+
     def gobutton_clicked(self):
+        
         def go():
             self.progress_bar.setValue(0)
             checkNames1()
@@ -161,49 +179,82 @@ class MainWindow(QMainWindow):
             msgbox = QMessageBox(icon=QMessageBox.Information)
             msgbox.setText(results)
             msgbox.setWindowTitle('Information')
-            msgbox.exec() 
+            p('finished, setting up info window')
+            p(a.log)
+            if a.log != '': msgbox.setStandardButtons(QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Open)
+            ret = msgbox.exec()
+            if ret == QMessageBox.StandardButton.Open:
+                pyquark.filestart('log.txt')
+
         if a.pgclist == '' or a.ybaclist == '' or a.pgcsheet == '' or a.ybacsheet == '':
             msgbox = QMessageBox(icon=QMessageBox.Information)
             msgbox.setText('One or more of the spreadsheet paths/sheet names are missing. Please set these values before continuing!')
             msgbox.setWindowTitle('Information')
             msgbox.exec()
-        else: 
-            p('All reqs satisfied, proceeding!')
-            if a.debug == 1: 
-                try: 
-                    go()
-                except ValueError as ve:
-                    traceback.print_tb(ve.__traceback__)
-                    print(f'ValueError: {ve}')
-                    funcerror(f'Sheet name does not exist! Error: \n{ve}')
-                except FileNotFoundError as fnfe:
-                    traceback.print_tb(fnfe.__traceback__)
-                    print(f'ValueError: {fnfe}')
-                    funcerror(f'File not found! Error: \n{fnfe}')
-                except BaseException as e:
-                    traceback.print_tb(e.__traceback__)
-                    print(f'Exception: {e}')
-                    funcerror(f'Unhandled Exception! Error: \n {e}')
+            return 1
+        if a.pgclist == a.ybaclist and a.dontshowdupe != 2:
+            p('Hold it!')
+            msgbox = QMessageBox(icon=QMessageBox.Information)
+            msgbox.setText('Spreadsheet paths are identical! Are you sure you want to proceed?')
+            msgbox.setWindowTitle('Information')
+
+            chkbox = QCheckBox()
+            chkbox.setText('Do not show again')
+            chkbox.stateChanged.connect(self.dont_show)
+
+            msgbox.setStandardButtons(QMessageBox.StandardButton.No | QMessageBox.StandardButton.Yes)
+            msgbox.setCheckBox(chkbox)
+            msgbox.setDefaultButton(QMessageBox.StandardButton.Yes)
+            ret = msgbox.exec()
+            if ret == QMessageBox.StandardButton.Yes:
+                pass
+            elif ret == QMessageBox.StandardButton.No:
+                return 1
             else:
-                go()
+                return 1
+        p('All reqs satisfied, proceeding!')
+        if a.debug == 0: 
+            try: 
+                ret = go()
+            except ValueError as ve:
+                traceback.print_tb(ve.__traceback__)
+                print(f'ValueError: {ve}')
+                funcerror(f'Sheet name does not exist! Error: \n{ve}')
+            except FileNotFoundError as fnfe:
+                traceback.print_tb(fnfe.__traceback__)
+                print(f'ValueError: {fnfe}')
+                funcerror(f'File not found! Error: \n{fnfe}')
+            except BaseException as e:
+                traceback.print_tb(e.__traceback__)
+                print(f'Exception: {e}')
+                funcerror(f'Unhandled Exception! Error: \n {e}')
+        else:
+            ret = go()
+
             
 
     ''' again, we are accepting every exception. why????
                     Well here, its a bit different. If there is an exception, I want the function to stop.
                     however, I also want to report the exception to the user for debugging purposes.
-                    thats why I except every error then put it in a qt popup, so its easier to digest for the user.
-                    the full trace still gets put in console, but the user can understand what the error was.
+                    thats why I except every error then put it in a qt popup, so its easier to digest for the user, if its a them problem
+                    the full trace still gets put in console, but the user can understand what the error was a little easier.
+                    in theory.
     '''
-    
-    def adv_togg(self):
-        if self.adv == 0:
-            self.adv = 1
+    def check_size(self):
+        p('check_size called')
+        if self.adv:
             self.central_widget.showadvwindows()
             self.setFixedHeight(530)
+            p("Set Size 300")
         else:
-            self.adv = 0
             self.central_widget.hideadvwindows()
             self.setFixedHeight(300)
+            p("Set Size 540")
+    def adv_togg(self):
+        self.adv = not self.adv
+        self.check_size()
+        p(self.adv)
+        p(self.size())
 
     def quit_app(self):
         print('quit triggered!')

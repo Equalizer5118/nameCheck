@@ -71,6 +71,7 @@ def export_json(name):
             'yba_gradecos': a.yba_gradecos,
             'yba_gradesep': a.yba_gradesep,
             "yba_gradesepv": a.yba_gradesepv,
+            'dontshowdupe': a.dontshowdupe,
         }
         with open(Path(os.path.abspath(name)), 'w') as f:
             json.dump(x, f, indent=4)

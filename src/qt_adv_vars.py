@@ -28,6 +28,7 @@ yba_gradesep = ''
 yba_gradesepv = ''
 
 taggedcol = 'Used on Page(s)'
+dontshowdupe = 0
 
 # ========== VARIABLES NOT SAVED ==========
 

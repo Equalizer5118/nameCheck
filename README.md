@@ -22,7 +22,7 @@ After your lists and sheet names are in the correct boxes, toggle whether or not
 If you have any issues, head to https://github.com/Equalizer5118/nameCheck/issues and create an issue. If you have a desperate problem, email me at grantb1224@hotmail.com. Make sure to title your email with "[nameCheck URGENT ISSUE]: Issue Here" and I will get back to you as soon as possible. 
 
 ## Build instructions
-Make sure you have at least Python V3.12.5 installed on your machine. Create a [Python Virtual Environment (venv)](https://python.land/virtual-environments/virtualenv) in the same directory as the source code. Activate it and then run this command:
+Make sure you have at least Python V3.12.x installed on your machine. Create a [Python Virtual Environment (venv)](https://python.land/virtual-environments/virtualenv) in the same directory as the source code. Activate it and then run this command:
 ```
 py -m pip install -r requirements.txt
 ```
