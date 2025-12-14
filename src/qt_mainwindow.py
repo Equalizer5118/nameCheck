@@ -1,6 +1,7 @@
 from PySide6.QtWidgets import (QMainWindow, QToolBar, QStatusBar,
                                QFileDialog, QMessageBox, QPushButton,
-                               QProgressBar, QCheckBox, QWidget)
+                               QProgressBar, QCheckBox, QDialog, 
+                               QScrollArea, QGroupBox, QVBoxLayout)
 from PySide6.QtCore import QEvent, Qt
 from PySide6.QtGui import QIcon
 from qt_defwidget import DefWindow
@@ -8,7 +9,8 @@ from debugprint import p
 from json_loading import *
 import pyquark # Dear CodeWizard777 from random stackoverflow thread, I love you. Why is os.startfile windows only??????
 from nameCheck import *
-from qt_univerr import funcerror, notice
+from qt_univerr import funcerror, notice, chkbox
+import qt_adv_vars as a
 import traceback
 def echo():
     print('qt_mainwindow present')
@@ -51,8 +53,8 @@ class MainWindow(QMainWindow):
         load_file.triggered.connect(self.load_config)
         load_file.setStatusTip('Load the current config into a different file')
 
-        #preferences_action = file_menu.addAction('Preferences') || TODO: Make this work
-        #preferences_action.triggered.connect(self.pref_clicked)
+        preferences_action = file_menu.addAction('Preferences')
+        preferences_action.triggered.connect(self.pref_clicked)
 
         quit_action = file_menu.addAction('Quit')
         quit_action.triggered.connect(self.quit_app)
@@ -116,6 +118,11 @@ class MainWindow(QMainWindow):
     def save_config_default(self):
         name = self.default_json
         self.statusBar().showMessage(export_json(name), 5000)
+    
+    def pref_clicked(self):
+        p('Preferences action clicked!')
+        self.pref_window = Preferences(self.app)
+        self.pref_window.show()
     
     def save_config(self):
         name = QFileDialog.getSaveFileName(caption='Save config as...', filter="JSON Files (*.json)")
@@ -257,8 +264,36 @@ class MainWindow(QMainWindow):
         print('quit triggered!')
         self.app.quit()
 
-class Preferences(QWidget):
+class Preferences(QDialog):
     def __init__(self, app):
         super().__init__()
         self.app = app
+        self.setWindowModality(Qt.WindowModality.ApplicationModal)
+        self.setWindowTitle('Preferences')
+        self.setWindowIcon(QIcon('_internal\\assets\\icon.ico'))
+        self.setFixedSize(603,103)
+
+        # Dupe sheet warning checkbox
+        if a.dontshowdupe == 2:
+            dupechked = Qt.CheckState.Checked
+        else:
+            dupechked = Qt.CheckState.Unchecked
+        showdupechk = chkbox('Do not show duplicate sheet warning', dupechked, 'If enabled, the program will not warn you \nif both spreadsheet paths are identical.', self.dupe_changed)
+        
+        # Inner layout
+        Vlayout = QVBoxLayout()
+        Vlayout.addLayout(showdupechk)
+
+        # Outer layout
+        groupbox = QGroupBox('Preferences')
+        groupbox.setLayout(Vlayout)
+        groupbox_layout = QVBoxLayout()
+        groupbox_layout.addWidget(groupbox)
+        self.setLayout(groupbox_layout)
+
+    def dupe_changed(self, state):
+        a.dontshowdupe = state
+        p(a.dontshowdupe)
+        
+        
         

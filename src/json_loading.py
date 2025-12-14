@@ -36,6 +36,7 @@ def import_json(name='default.json'):
                 a.yba_gradecos = d['yba_gradecos']
                 a.yba_gradesep = d['yba_gradesep']
                 a.yba_gradesepv = d['yba_gradesepv']
+                a.dontshowdupe = d['dontshowdupe']
             p(f'Loaded saved settings from "{name}"')
             return f'Loaded saved settings from "{name}"'
         else:
