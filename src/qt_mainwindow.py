@@ -21,13 +21,13 @@ class MainWindow(QMainWindow):
         self.ready = False
         self.app = app
         self.adv = False
-        self.default_json = 'data\\default.json'
+        self.default_json = 'data/default.json'
 
         self.setFixedWidth(700)
         self.setFixedHeight(300)
 
         self.setWindowTitle("nameCheck")
-        self.setWindowIcon(QIcon('_internal\\assets\\icon.ico')) # This won't work in dev testing, but it does in build
+        self.setWindowIcon(QIcon('_internal/assets/icon.ico')) # This won't work in dev testing, but it does in build
 
         menu_bar = self.menuBar()
         file_menu = menu_bar.addMenu('File')
@@ -270,7 +270,7 @@ class Preferences(QDialog):
         self.app = app
         self.setWindowModality(Qt.WindowModality.ApplicationModal)
         self.setWindowTitle('Preferences')
-        self.setWindowIcon(QIcon('_internal\\assets\\icon.ico'))
+        self.setWindowIcon(QIcon('_internal/assets/icon.ico'))
         self.setFixedSize(603,103)
 
         # Dupe sheet warning checkbox

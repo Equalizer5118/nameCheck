@@ -1,14 +1,50 @@
+## v0.3.0: Linux Support
+
+Program has been updated to support Linux with little to no differences in appearence/function. Current packaged version is built for Ubuntu, so you may need to rebuild for other distros.
+
+### New Featurs / changes
+
+* Ubuntu support
+* If the lists are the same, program will ask the user if they meant to use the same list before proceeding.
+
+  * Users can check to not show the warning again. This can be undone in Preferences
+* Added preferences
+
+  * Currently only shows setting for duplicate popup, will add more later if needed
+* Added support for `.ods` files
+
+### Bugfixes
+
+* Fixed an issue where the list of similar names persisted between checks
+* Fixed debug variable not correctly being defined in `qt_adv_vars.py`
+
+### Code/Internal Changes
+
+* Condensed sheet loading logic to one function
+* Created basic notice template in `qt_univerr.py` to reduce duplicate code
+* Bumped PySide6 version 6.8 -> 6.10
+* Changed os.startfile() to pyquark.filestart() for cross-platform support
+* Reduced many cases of duplicate/unused code
+
+### Known Issues
+
+* On linux, after toggling advanced windows a couple times, the window size will revert to the previous height when the main window loses focus. (See [this issue](https://github.com/Equalizer5118/nameCheck/issues/2))
+* On linux, JSON files are loaded/saved as "data\name.json" in the base directory, not in `data/` folder. Program functions identically to Windows version.
+
 ## v0.2.6
 
 Bugfixes + refactoring
 
 ### Bugfixes
+
 * Fixed bug where program has a heart attack due to looking at the wrong list
 * Fixed results reporting the entire list of students in a sheet and not just ones in the grade, even if grade divider is set to column
 
 ### Changes
+
 * Collapsed Save and Load buttons into one menu instead of two
 * Minor code refactoring
+
 ## v0.2.5
 
 Name similarity checking
