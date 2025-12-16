@@ -1,3 +1,4 @@
+# TODO: Reduce duplicate code!
 from PySide6.QtWidgets import (QWidget, QLineEdit, QHBoxLayout,
                                 QGroupBox, QVBoxLayout, QComboBox, QLabel)
 import qt_adv_vars as a

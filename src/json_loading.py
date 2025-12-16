@@ -9,10 +9,7 @@ def import_json(name='default.json'):
     try:
         if pathlib.Path(os.path.abspath(name)).is_file():
             with open(name) as file:
-                try:
-                    d = json.load(file)
-                except:
-                    return f'{name} is not a valid json file!'
+                d = json.load(file)
                 a.last_dir = d['last_dir']
 
                 a.pgclist = d['pgclist']

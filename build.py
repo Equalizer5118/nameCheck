@@ -6,6 +6,7 @@ from pathlib import Path
 from src.ver import ver
 from shutil import copy
 import sys
+from platform import system
 
 z = 1
 b = 1
@@ -35,20 +36,21 @@ if z == 0 and b == 0:
 
 if b == 1:
     print('Building program...')
-    iargs = ['src\\main.spec', '-y']
     if of == 1:
-        iargs.append('-F')
+        iargs = ['src/main.py', '-y', '-F']
+    else:
+        iargs = ['src/main.spec', '-y']
     PyInstaller.__main__.run(iargs)
-    copy('README.md', 'dist\\main\\README.md')
-    copy('VERSION.md', 'dist\\main\\VERSION.md')
+    copy('README.md', 'dist/main/README.md')
+    copy('VERSION.md', 'dist/main/VERSION.md')
     print('Program successfully compiled!')
 
 if z == 1:
-    print(f'Removing dist\\nameCheck-{ver}.zip...')
+    print(f'Removing dist/nameCheck-{ver}-{system()}.zip...')
     try:
-        Path.unlink(f'dist\\nameCheck-{ver}.zip')
+        Path.unlink(f'dist/nameCheck-{ver}-{system()}.zip')
     except FileNotFoundError:
-        print(f'dist\\nameCheck-{ver}.zip not present, passing')
+        print(f'dist/nameCheck-{ver}-{system()}.zip not present, passing')
     print(' Zipping file...')
     list = []
     def dir_scan(path):
@@ -57,9 +59,9 @@ if z == 1:
                 list.append(str(i.path))
             elif i.is_dir():
                 dir_scan(i.path)
-    dir_scan('dist\\main')
+    dir_scan('dist/main')
 
-    with ZipFile(f'dist\\nameCheck-{a.ver}.zip', 'w') as myzip:
+    with ZipFile(f'dist/nameCheck-{a.ver}-{system()}.zip', 'w') as myzip:
         for i in list:
             myzip.write(i)
 

@@ -3,7 +3,16 @@ from debugprint import p
 def echo():
     print('nameCheck present')
 def init_sheet(list, pgcsheet, engine = 'openpyxl'):
-   p(list[-3:])
-   if list[-3:] == 'ods': engine = 'odf'
-   rlist = pd.read_excel(list, pgcsheet, engine=engine)
-   return rlist
+    list = str(list) # Lists coming from CLI mode may be a PosixPath object and not a string. Force list to be a string.
+    p(list)
+    p(list[-3:])
+    if list[-3:] == 'ods': engine = 'odf'
+    try:
+        rlist = pd.read_excel(list, sheet_name=pgcsheet, engine=engine)
+    except FileNotFoundError:
+        p(f'File not found: {list}')
+        return f'File not found: {list}'
+    except ValueError:
+        p(f'Sheet name "{pgcsheet}" not found in file: {list}')
+        return f'Sheet name "{pgcsheet}" not found in file: {list}'   
+    return rlist
