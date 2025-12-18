@@ -19,8 +19,7 @@ if '--help' in sys.argv or '-help' in sys.argv:
 if len(sys.argv) > 1 and sys.argv[1] == 'cli':
     import cli_init
     cli_init.cli_init()
+    if '--batch' not in sys.argv: input('Press enter to exit...')
 else:
     import gui_init
     gui_init.run()
-
-if a.debug: input('Press enter to exit...')

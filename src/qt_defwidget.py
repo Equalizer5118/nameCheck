@@ -112,7 +112,7 @@ class DefWindow(QWidget):
 
     def configupdate(self):
         self.b1tbox.setText(a.pgclist)
-        self.b2sbox.setText(a.pgcsheet)
+        self.b1sbox.setText(a.pgcsheet)
         self.b2tbox.setText(a.ybaclist)
         self.b2sbox.setText(a.ybacsheet)
         if a.genlog == True: 

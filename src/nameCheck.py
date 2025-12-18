@@ -13,7 +13,7 @@ def catchLastNameSimilarity():
     p()
         # BC my school's admin is stupid, they give us gov names and not preferred names. As stupid as this is, we have to catch it otherwise yearbooks will get recalled
         # This checks names in the not in YBA list and compares to the unverified list (doesnt check verified list, as not needed),
-        # 1700 yearbooks recalled for 1 name, who wasn't even in the yearbook other than that person's portrait image... 
+        # 1700 yearbooks recalled for 1 name, who wasn't even in the yearbook other than that person's mfing portrait image... 
         # This still might not catch everything, but its better than nothing
 
     for i in a.pgs:
@@ -65,6 +65,8 @@ def checkNames1():
     a.ybai = a.ybalist.index # creates an array with the amount of students in the list, so we can iterate in loops
 
     if a.logfile.exists() == False: a.logfile.open("x") # creates log.txt if it doesn't exist
+
+    if a.method == 'gui': si.test_sheet(a.pgclist, a.pgcsheet), si.test_sheet(a.ybaclist, a.ybacsheet)
 
     # Add student names to lists
     for i in a.pgi: 

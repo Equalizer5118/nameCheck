@@ -46,7 +46,7 @@ class MainWindow(QMainWindow):
         divider = config_menu.addSeparator()
 
         self.load_default = config_menu.addAction("Load Default")
-        self.load_default.triggered.connect(self.load_config_default)
+        self.load_default.triggered.connect(self.load_config_base)
         self.load_default.setStatusTip(f'Load the default config ("{self.default_json}")')
 
         load_file = config_menu.addAction('Load JSON file...')
@@ -130,17 +130,23 @@ class MainWindow(QMainWindow):
         self.statusBar().showMessage(export_json(name[0]), 5000)
         self.default_json = name[0]
     
+    def statusbar_message(self, message, timeout=5000):
+        self.statusBar().showMessage(message, timeout)
+        self.updatemenus()
+
     def updatemenus(self):
         self.central_widget.configupdate()
-    
-    #def pref_clicked(self):
-    #    p('Preferences action clicked!')
 
-    def load_config_default(self):
-        name = self.default_json
+    def load_config_base(self, name = None):
+        p(f'{name}. nametype:' + str(type(name)))
+        if type(name) != str: name = self.default_json
         p(f'Loading "{name}"')
-        self.statusBar().showMessage(import_json(name), 5000)
-        self.updatemenus()
+        res = json_load_GUI(name)
+        if res[0] != 0:
+            funcerror(f'Failed to load config from {name}.\nErrorCode{res[0]}: {res[1]}')
+        else:
+            self.statusbar_message(f'Loaded settings from {name}', 5000)
+
 
     def load_config(self):
         p('Loading from selected json')
@@ -149,8 +155,8 @@ class MainWindow(QMainWindow):
         diag.setFileMode(QFileDialog.ExistingFile)
         if diag.exec():
             name = diag.selectedFiles()
-            self.statusBar().showMessage(import_json(name[0]), 5000)
-        self.updatemenus()
+            self.load_config_base(name)
+            self.statusbar_message(f'Loaded settings from {name}', 5000)
         self.default_json = name[0]
 
     def help_button(self):
@@ -217,16 +223,13 @@ class MainWindow(QMainWindow):
             try: 
                 ret = go()
             except ValueError as ve:
-                traceback.print_tb(ve.__traceback__)
-                print(f'ValueError: {ve}')
+                print(traceback.format_exc())
                 funcerror(f'Sheet name does not exist! Error: \n{ve}')
             except FileNotFoundError as fnfe:
-                traceback.print_tb(fnfe.__traceback__)
-                print(f'ValueError: {fnfe}')
+                print(traceback.format_exc())
                 funcerror(f'File not found! Error: \n{fnfe}')
-            except BaseException as e:
-                traceback.print_tb(e.__traceback__)
-                print(f'Exception: {e}')
+            except BaseException as e: # essentially functions the same as if BaseException was not handled, but gives the user an error window instead of just cryptic console text
+                print(traceback.format_exc())
                 funcerror(f'Unhandled Exception! Error: \n {e}')
         else:
             ret = go()

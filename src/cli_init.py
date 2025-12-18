@@ -10,49 +10,30 @@ from debugprint import p
 from pathlib import Path
 from pandas.core.frame import DataFrame
 from nameCheck import *
+from spreadsheetms import test_sheet
+import traceback
 
-def panic(msg):
-    # General error function. Simple enough, plug in msg, output error + help txt.
-    print(f'Error: {msg}')
-    print(a.helptxt)
-    input('Press enter to exit...')
-    quit()
-
-def get_sett(arg, expected):
-    # Attempts to get the setting
-    try:
-        val = sys.argv[sys.argv.index(arg) + 1]
-    except IndexError:
-        panic(f'No value provided for argument {arg}')
-    if val[:2] == '-': panic(f'Invalid argument provided for {arg}: {val} Expected: {expected}') 
-    # Could break if a folder name begins with a dash. || TODO: Change to where 
-    # all supported args are in a list, and this compares the setting to that list. 
-    # Also could then use similar logic to check if there are any unsupported args
-    return val                                                                                   
-def test_path(arg, expected):                                                                    
-
-    val = get_sett(arg = arg, expected = expected)
-    path = Path(val)
-    if Path.is_file(path):
-        return path
-    panic(f'Invalid argument provided for {arg}: {val} Expected: {expected}')
-
-def test_sheet(listpath, sheetname):
-    listn = init_sheet(listpath, sheetname)
-    p(type(listn))
-    if type(listn) != DataFrame: panic(listn)
 
 def cli_init():
     p('CLI mode detected')
+    a.method = 'cli'
     mode = 'standard'
     if '--json' in sys.argv:
         mode = 'json'
         p('JSON file used')
     
     parse_clargs(mode)
-    if '--nocheck' in sys.argv or '-nc' in sys.argv: 
-        input('Press enter to exit the program...')
-        quit()
+
+    if '--savejson' in sys.argv:
+        from json_loading import export_json
+        epxjson = get_sett('--savejson', '[name].json', True) # Using get_sett and not test_path bc test/creation logic is handled in export_json
+        result = export_json(epxjson)
+        if result == 'Failed':
+            panic('Failed to export settings to JSON. Check console history for more details.')
+        print()
+
+    if ('--nocheck' in sys.argv) or ('-nc' in sys.argv): return
+
     checkNames1()
     checkNames2()
     checkNames3()
@@ -62,10 +43,26 @@ def parse_clargs(mode):
         from json_loading import import_json
         jfile = sys.argv[sys.argv.index('--json')]
         # Confirm json file is valid
-        path = test_path(jfile, '[path].json')
+        path = get_sett(jfile, '[path].json', True)
         print('Importing settings from json file...')
 
-        import_json(path)
+        res = import_json(path)
+        if res[0] != 0:
+            print('Import failed with the following exit code:')
+            if res[0] == 3:
+                print(f'Exit Code 3: Version Mismatch! JSON version: {res[1][1]}, Program version: {res[1][2]}')
+                print('The JSON file version does not match the current program version. If you proceed, some settings may not load correctly.')
+                inp = input('Do you want to proceed? (y/n): ')
+                if inp.lower() == 'y':
+                    print('Proceeding with JSON import attempt')
+                    from json_loading import json_to_vars
+                    json_to_vars(a.openjson)
+                else:
+                    panic('Version mismatch.')
+            else:
+                print(f'Exit Code {res[0]}: {res[1]}')
+                panic('Error during JSON import. See console output for more details.')
+        print('JSON import successful, verifying settings') 
 
         # Verify everything exists
         if not (Path(a.pgclist).is_file() or Path(a.ybaclist).is_file()): panic('One or more lists provided in JSON do not exist')
@@ -173,5 +170,42 @@ def parse_clargs(mode):
     print(f'PG sheet: {a.pgcsheet}, PG list: {a.pgclist}')
     print(f'YBA sheet: {a.ybacsheet}, YBA list: {a.ybaclist}')
 
+def panic(msg):
+    # General error function. Simple enough, plug in msg, output error + help txt.
+    print(f'Error: {msg}')
+    print(a.helptxt)
+    input('Press enter to exit...')
+    quit()
 
+def get_sett(arg, expected, allowmissing = False):
+    # Attempts to get the setting
+    if arg not in sys.argv: 
+        KeyError(
+        f'"{arg}" not present in "sys.argv"!'
+    )
+    try:
+        val = sys.argv[sys.argv.index(arg) + 1]
+    except IndexError: # If arg is at the end of the list
+        if allowmissing:
+            return None # We already know theres no argument after, no need to go any further
+        panic(f'No value provided for argument {arg}')
+    if val[:1] == '-': 
+        if not allowmissing: panic(f'Invalid argument provided for {arg}: {val} Expected: {expected}')
+        return None
+    # Could break if a folder name begins with a dash. || TODO: Change to where 
+    # all supported args are in a list, and this compares the setting to that list. 
+    # Also could then use similar logic to check if there are any unsupported args
+    return val                                                                                   
+def test_path(arg, expected, allowmissing = False):                                                                    
 
+    val = get_sett(arg = arg, expected = expected)
+    path = Path(val)
+    if Path.is_file(path) or allowmissing == True: return val # Returning string and not path object to not break existing logic for JSON saving and loading
+    panic(f'Invalid argument provided for {arg}: {val} Expected: {expected}')
+
+def cli_sheet_test(listn, sheetn):
+    try:
+        test_sheet(listn, sheetn)
+    except ValueError as ve:
+        print(traceback.format_exc())
+        panic(f'ValueError: {ve}')

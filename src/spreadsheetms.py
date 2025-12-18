@@ -16,3 +16,10 @@ def init_sheet(list, pgcsheet, engine = 'openpyxl'):
         p(f'Sheet name "{pgcsheet}" not found in file: {list}')
         return f'Sheet name "{pgcsheet}" not found in file: {list}'   
     return rlist
+def test_sheet(listpath, sheetname):
+    listn = init_sheet(listpath, sheetname)
+    p(type(listn))
+    if type(listn) != pd.DataFrame: 
+        raise ValueError(
+f'{sheetname} does not exist in {listpath}!'
+        )

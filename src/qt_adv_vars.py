@@ -2,6 +2,9 @@ from datetime import datetime as dt
 from pathlib import Path as path
 from ver import ver
 
+# This file is used to store variables outside of any function or file, so they can be accessed globally via import
+# ========== VARIABLES SAVED TO JSON ==========
+
 last_dir = '.'
 
 pg_or_yba = 'pg'
@@ -28,10 +31,12 @@ yba_gradecos = 'Sheet'
 yba_gradesep = ''
 yba_gradesepv = ''
 
-taggedcol = 'Used on Page(s)' # Unused? 
+taggedcol = 'Used on Page(s)' # Unused? Should be same on sheets directly exported from YBA
 dontshowdupe = 0
 
 # ========== VARIABLES NOT SAVED ==========
+
+# These are generaly temporary variables not saved to JSON, but still used in here to be accessed globally
 
 unac = []
 noimg = []
@@ -40,6 +45,7 @@ pgs = []
 ybas = []
 dat = dt.now()
 logfile = path('log.txt')
+openjson = None
 log = ''
 pglist = ''
 ybalist = ''
@@ -49,6 +55,9 @@ pgmid = ''
 namesim = []
 debug = 0
 
+method = 'gui' # Specifies if running in gui or cli mode
+
+# Doesn't need to be changed or saved, but its useful to have here to avoid duplicate code
 helptxt = f'''NameCheck version {ver}
 Help Menu
 
@@ -70,8 +79,9 @@ Options
             --nolog -                 Disables log file generation
 
             --savejson [name] -       Saves the current options to a json file with the given name. If no path is given, saves to 'data/[name].json'
+
         JSON mode:
-            --json [path] -           Specifies a json file to load preset options from (overrides other CLI options)
+            --json [path] -           Specifies a json file to load preset options from (overrides other CLI options). If no path given, saves to 'data/default.json'
 
 
 '''

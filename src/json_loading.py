@@ -3,56 +3,108 @@ import pathlib
 from debugprint import p
 import qt_adv_vars as a
 from pathlib import Path
+import traceback
 import os
+from ver import ver
 
-def import_json(name='default.json'):
+def json_load_GUI(name):
+    from PySide6.QtWidgets import QMessageBox
+    from qt_univerr import notice, funcerror
+    res = import_json(name)
+    if res[0] != 0:
+        if res[0] == 3:
+            reason = f'''JSON loading failed with the following error message
+    Exit Code 3: Version Mismatch! JSON version: {res[1][1]}, Program version: {res[1][2]}.
+The JSON file version does not match the current program version. If you proceed, some settings may not load correctly.
+Do you want to proceed?'''
+            msgbox = notice(icon = QMessageBox.Critical, title = 'JSON Import Error', reason = reason)
+            msgbox.setStandardButtons(QMessageBox.StandardButton.No | QMessageBox.StandardButton.Yes)
+            msgbox.setDefaultButton(QMessageBox.StandardButton.Yes)
+            ret = msgbox.exec()
+            if ret == QMessageBox.StandardButton.Yes:
+                print('Proceeding with JSON import attempt')
+                from json_loading import json_to_vars
+                json_to_vars(a.openjson)
+            else:
+                return [3, 'User aborted JSON import due to version mismatch']
+        else:
+            e = [res[0], res[1]]
+            print(f'JSON import error: {e}')
+            return e
+    return [0, f'JSON load from {name} success']
+
+def findsetting(key, d):
+    try:
+        p(f'Finding {key} in JSON. Set as {d[key]}')
+        return d[key]
+    except KeyError:
+        p(f'Key "{key}" not found in JSON data!')
+        return None
+
+def json_to_vars(d):
+    a.last_dir = findsetting('last_dir', d)
+
+    a.pgclist = findsetting('pgclist', d)
+    a.pgcsheet = findsetting('pgcsheet', d)
+    p(a.pgcsheet)
+
+    a.ybaclist = findsetting('ybaclist', d)
+    a.ybacsheet = findsetting('ybacsheet', d)
+    p(a.ybacsheet)
+
+    a.dontshowdupe = findsetting('dontshowdupe', d)
+
+    a.genlog = findsetting('genlog', d)
+
+    # PG sheet Adv values
+    a.pg_lastcol = findsetting('pg_lastcol', d)
+    a.pg_firstcol = findsetting('pg_firstcol', d)
+    a.pg_gradecos = findsetting('pg_gradecos', d)
+    a.pg_gradesep = findsetting('pg_gradesep', d)
+    a.pg_gradesepv = findsetting('pg_gradesepv', d)
+
+    # PG sheet adv values
+    a.yba_lastcol = findsetting('yba_lastcol', d)
+    a.yba_firstcol = findsetting('yba_firstcol', d)
+    a.yba_gradecos = findsetting('yba_gradecos', d)
+    a.yba_gradesep = findsetting('yba_gradesep', d)
+    a.yba_gradesepv = findsetting('yba_gradesepv', d)
+
+    return [0, None]
+
+def import_json(name=None, Pass = False): # name is set to none for easier cli use. Should have no effect on GUI
+    if name is None: name = 'data/default.json' 
     try:
         if pathlib.Path(os.path.abspath(name)).is_file():
             with open(name) as file:
-                d = json.load(file)
-                a.last_dir = d['last_dir']
-
-                a.pgclist = d['pgclist']
-                a.pgcsheet = d['pgcsheet']
-
-                a.ybaclist = d['ybaclist']
-                a.ybacsheet = d['ybacsheet']
-
-                a.genlog = d['genlog']
-
-                # PG sheet Adv values
-                a.pg_lastcol = d['pg_lastcol']
-                a.pg_firstcol = d['pg_firstcol']
-                a.pg_gradecos = d['pg_gradecos']
-                a.pg_gradesep = d['pg_gradesep']
-                a.pg_gradesepv = d['pg_gradesepv']
-
-                # PG sheet adv values
-                a.yba_lastcol = d['yba_lastcol']
-                a.yba_firstcol = d['yba_firstcol']
-                a.yba_gradecos = d['yba_gradecos']
-                a.yba_gradesep = d['yba_gradesep']
-                a.yba_gradesepv = d['yba_gradesepv']
-                a.dontshowdupe = d['dontshowdupe']
-            p(f'Loaded saved settings from "{name}"')
-            return f'Loaded saved settings from "{name}"'
+                a.openjson = json.load(file)
+                try: version = a.openjson['version']
+                except KeyError: version = 'unknown'
+                if version != ver: return [3, ['Version Mismatch!', version, ver]]
+                res = json_to_vars(a.openjson)
+                p(f'Loaded settings from "{name}"')
+                return res
+                    
         else:
             p(f'{name} is not a file!')
-            return f'{name} is not a file!'
+            return [1, f'{name} is not a file!']
     except TypeError:
         p(f'{name} is not a valid filepath!')
-        return f'{name} is not a valid filepath!'
+        return [2, f'{name} is not a valid filepath!']
 
-def export_json(name):
+def export_json(name = None): # name is set to none for easier cli use. Should have no effect on GUI
+    if name is None: name = 'data/default.json' 
     try:
+        p(name)
         if pathlib.Path(os.path.abspath(name)).is_file() == False:
             if pathlib.Path(os.path.abspath(name)).is_dir():
-                p(f'{name} is not a file!')
-                return f'{name} is not a file!'
+                print(f'{name} points to a directory. Must point to an existing .json file or the name of a new .json file.')
+                return 'Failed'
             else:
                 open(Path(name), 'x')
                 
         x = {
+            'version': ver,
             'last_dir': a.last_dir,
             'pgclist': a.pgclist,
             'pgcsheet': a.pgcsheet,
@@ -75,6 +127,10 @@ def export_json(name):
             json.dump(x, f, indent=4)
         p(f'Saved settings to "{name}"')
         return f'Saved settings to "{name}"'
-    except TypeError:
-        p(f'{name} is not a valid filepath!')
-        return f'{name} is not a valid filepath!'
+    except TypeError as te:
+        print(f'{name} is not a valid filepath, or one or more objects could not be serialized!')
+        if a.debug == 1:
+            print(traceback.format_exc())
+        else:
+            print(f'TypeError: {te}')
+        return 'Failed'

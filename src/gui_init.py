@@ -9,8 +9,7 @@ def panic(e):
     # This function is a template for when an exception occurs during module imports
     # AKA Its still broken for some damn reason...
     print('There was an error importing the required modules. One or more are missing/broken. Full exception: ')
-    traceback.print_tb(e.__traceback__)
-    print(f'Exception: {e}')
+    print(traceback.format_exc())
     input('Press enter to close the program...')
     exit()
 def run():
@@ -31,13 +30,13 @@ def loadmod():
         from debugprint import p
         from json_loading import import_json
         import_json('data/default.json')
-    except KeyError as ke:
+    except KeyError as ke: #Unsure if this is needed anymore
         #'''
         # This catches any errors with loading the json file. The logic for checking if it exists below,
         # so this only catches if a key is missing. It will then delete the json, which will be recreated on program exit
         #'''
         print(f'Full Trace + Error:')
-        traceback.print_tb(ke.__traceback__)
+        print(traceback.format_exc())
         print(f'KeyError: {ke}')
         print('===============\n===============\n==Malformed JSON file!\n===============\n===============')
         input('Press enter to rebuild JSON file and continue with the program\nTHIS WILL DELETE YOUR STORED SETTINGS. If you want to copy your settings before they are deleted, do so now.\nPress enter to continue...')
