@@ -18,6 +18,7 @@ def run():
     setup()
 
 def loadmod():
+    from debugprint import p
     # Ensure data path exists
 
     if not Path('data').is_dir():
