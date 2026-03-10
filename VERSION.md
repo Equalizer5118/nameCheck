@@ -1,4 +1,4 @@
-## v0.3.0: Linux Support
+## v1.0.0: Linux Support + CLI
 
 Program has been updated to support Linux with little to no differences in appearence/function. Current packaged version is built for Ubuntu, so you may need to rebuild for other distros.
 
