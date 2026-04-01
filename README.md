@@ -1,3 +1,6 @@
+## THIS REPO HAS BEEN MOVED!!!!!
+This repo was moved to [Codeberg](https://codeberg.org/Equalizer5118/nameCheck). Please visit that repo for new versions.
+
 ## nameCheck: Make your Yearbook Avenue name-checking a little easier
 
 nameCheck is a small program that compares a class roster to a Yearbook Avenue coverage report and a High School Class roster. It will check if a name in YBA is in the class roster and, if not, add it to a list of "unverified" students.
